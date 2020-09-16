@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Дмитрий Осадченко](https://up.htmlacademy.ru/javascript/21/user/1462895).
-* Наставник: `Неизвестно`.
+* Наставник: [Алексей Хабиров](https://up.htmlacademy.ru/javascript/21/user/963185).
 
 ---
 
