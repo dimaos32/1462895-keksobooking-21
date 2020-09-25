@@ -1,5 +1,15 @@
 'use strict';
 
+const offersField = document.querySelector(`.map__pins`);
+const pinTemplate = document.querySelector(`#pin`)
+  .content
+  .querySelector(`button`);
+
+const fragment = document.createDocumentFragment();
+
+const PIN_WIDTH = 50;
+const PIN_HEIGHT = 70;
+
 const getRandomIntNumber = (min = 0, max = 100) => {
   return min + Math.floor(Math.random() * (max - min + 1));
 };
@@ -85,7 +95,7 @@ const generateMocks = (n) => {
         photos: getRandomArrayElements(PHOTOS_DB, getRandomIntNumber(1, PHOTOS_DB.length))
       },
       location: {
-        x: getRandomIntNumber(0, 1200),
+        x: getRandomIntNumber(25, 1175),
         y: getRandomIntNumber(130, 630)
       }
     };
@@ -100,4 +110,22 @@ const generateMocks = (n) => {
   return generatedMocks;
 };
 
+const renderOffer = (offer) => {
+  const offerPreset = pinTemplate.cloneNode(true);
+
+  offerPreset.style = `left: ${offer.location.x - PIN_WIDTH / 2}px; top: ${offer.location.y - PIN_HEIGHT}px`;
+  offerPreset.querySelector(`img`).src = `${offer.author.avatar}`;
+  offerPreset.querySelector(`img`).alt = `${offer.offer.title}`;
+
+  return offerPreset;
+};
+
 const offers = generateMocks(8);
+
+for (let i = 0; i < offers.length; i++) {
+  fragment.append(renderOffer(offers[i]));
+}
+
+offersField.append(fragment);
+
+document.querySelector(`.map`).classList.remove(`map--faded`);
