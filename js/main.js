@@ -1,5 +1,42 @@
 'use strict';
 
+const RENT_WORDS_DB = [
+  `Сдам`,
+  `Сдается`,
+  `Свободно жилье -`,
+  `Можно арендовать`,
+  `Сдается жилье -`,
+  `Специально для вас -`,
+];
+const TYPES_DB = [`palace`, `flat`, `house`, `bungalow`];
+const TYPES_DB_RU = {
+  palace: `Дворец`,
+  flat: `Квартира`,
+  house: `Дом`,
+  bungalow: `Бунгало`,
+};
+const CHECK_IN_OUT_DB = [`12:00`, `13:00`, `14:00`];
+const FEATURES_DB = [
+  `wifi`,
+  `dishwasher`,
+  `parking`,
+  `washer`,
+  `elevator`,
+  `conditioner`,
+];
+const DESCRIPTION_WORDS_DB = [
+  `красивые виды из окон.`,
+  `тихий район.`,
+  `территория Якудзы.`,
+  `центр города.`,
+  `ярко выраженный местный колорит.`,
+];
+const PHOTOS_DB = [
+  `http://o0.github.io/assets/images/tokyo/hotel1.jpg`,
+  `http://o0.github.io/assets/images/tokyo/hotel2.jpg`,
+  `http://o0.github.io/assets/images/tokyo/hotel3.jpg`,
+];
+
 const offersField = document.querySelector(`.map__pins`);
 const pinTemplate = document.querySelector(`#pin`)
   .content
@@ -18,54 +55,17 @@ const getRandomArrayElements = (arr, n = 1) => {
   let randomArray = [];
 
   for (let i = 0; i < arr.length && i < n; i++) {
-    const ELEMENT = getRandomIntNumber(i, arr.length - 1);
-    randomArray.push(arr[ELEMENT]);
-    const SWAP = arr[ELEMENT];
-    arr[ELEMENT] = arr[i];
-    arr[i] = SWAP;
+    const element = getRandomIntNumber(i, arr.length - 1);
+    randomArray.push(arr[element]);
+    const swap = arr[element];
+    arr[element] = arr[i];
+    arr[i] = swap;
   }
 
   return randomArray;
 };
 
 const generateMocks = (n) => {
-  const RENT_WORDS_DB = [
-    `Сдам`,
-    `Сдается`,
-    `Свободно жилье -`,
-    `Можно арендовать`,
-    `Сдается жилье -`,
-    `Специально для вас -`,
-  ];
-  const TYPES_DB = [`palace`, `flat`, `house`, `bungalow`];
-  const TYPES_DB_RU = {
-    palace: `Дворец`,
-    flat: `Квартира`,
-    house: `Дом`,
-    bungalow: `Бунгало`,
-  };
-  const CHECK_IN_OUT_DB = [`12:00`, `13:00`, `14:00`];
-  const FEATURES_DB = [
-    `wifi`,
-    `dishwasher`,
-    `parking`,
-    `washer`,
-    `elevator`,
-    `conditioner`,
-  ];
-  const DESCRIPTION_WORDS_DB = [
-    `красивые виды из окон.`,
-    `тихий район.`,
-    `территория Якудзы.`,
-    `центр города.`,
-    `ярко выраженный местный колорит.`,
-  ];
-  const PHOTOS_DB = [
-    `http://o0.github.io/assets/images/tokyo/hotel1.jpg`,
-    `http://o0.github.io/assets/images/tokyo/hotel2.jpg`,
-    `http://o0.github.io/assets/images/tokyo/hotel3.jpg`,
-  ];
-
   const generatedMocks = [];
 
   let avatarNumbers = [];
