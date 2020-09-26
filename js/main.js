@@ -62,12 +62,21 @@ const typesMap = {
   bungalow: `Бунгало`,
 };
 
-const ofeersZone = document.querySelector(`.map__pins`);
+const ofersZone = document.querySelector(`.map__pins`);
 const pinTemplate = document.querySelector(`#pin`)
   .content
   .querySelector(`button`);
 
-const fragment = document.createDocumentFragment();
+const fragmentPinList = document.createDocumentFragment();
+
+
+const cardTemplate = document.querySelector(`#card`)
+  .content
+  .querySelector(`.popup`);
+
+const fragmentOfferCards = document.createDocumentFragment();
+
+const map = document.querySelector(`.map`);
 
 const getRandomIntNumber = (min = 0, max = 100) => {
   return min + Math.floor(Math.random() * (max - min + 1));
@@ -125,7 +134,7 @@ const generateMocks = (n) => {
         photos: getRandomArrayElements(PHOTOS_DB, getRandomIntNumber(1, PHOTOS_DB.length))
       },
       location: {
-        x: getRandomIntNumber(LOCATION_X_MIN, ofeersZone.offsetWidth),
+        x: getRandomIntNumber(LOCATION_X_MIN, ofersZone.offsetWidth),
         y: getRandomIntNumber(LOCATION_Y_MIN, LOCATION_Y_MAX)
       }
     };
@@ -140,7 +149,7 @@ const generateMocks = (n) => {
   return generatedMocks;
 };
 
-const renderOffer = (offer) => {
+const renderOfferPin = (offer) => {
   const offerPreset = pinTemplate.cloneNode(true);
 
   offerPreset.style = `left: ${offer.location.x - PIN_WIDTH / 2}px; top: ${offer.location.y - PIN_HEIGHT}px`;
@@ -150,12 +159,47 @@ const renderOffer = (offer) => {
   return offerPreset;
 };
 
+const renderOfferCards = (offer) => {
+  const offerPreset = cardTemplate.cloneNode(true);
+
+  offerPreset.querySelector(`.popup__avatar`).src = offer.author.avatar;
+  offerPreset.querySelector(`.popup__title`).textContent = offer.offer.title;
+  offerPreset.querySelector(`.popup__text--address`).textContent = offer.offer.address;
+  offerPreset.querySelector(`.popup__text--price`).innerHTML = `${offer.offer.price}&#x20bd;<span>/ночь</span>`;
+  offerPreset.querySelector(`.popup__type`).textContent = typesMap[offer.offer.type];
+  offerPreset.querySelector(`.popup__text--capacity`).textContent = `${offer.offer.rooms} комнаты для ${offer.offer.guests} гостей`;
+  offerPreset.querySelector(`.popup__text--time`).textContent = `Заезд после ${offer.offer.checkin}, выезд до ${offer.offer.checkout}`;
+  offerPreset.querySelector(`.popup__description`).textContent = offer.offer.description;
+
+  for (let i = 0; i < FEATURES_DB.length; i++) {
+    if (!offer.offer.features.includes(FEATURES_DB[i])) {
+      offerPreset.querySelector(`.popup__feature--${(FEATURES_DB[i])}`).remove();
+    }
+  }
+
+  for (let i = 0; i < offer.offer.photos.length; i++) {
+    offerPreset.querySelectorAll(`.popup__photo`)[i].src = offer.offer.photos[i];
+
+    if (i < offer.offer.photos.length - 1) {
+      offerPreset.querySelector(`.popup__photos`)
+        .append(offerPreset.querySelector(`.popup__photo`).cloneNode());
+    }
+  }
+
+  return offerPreset;
+};
+
 const offers = generateMocks(MOCKS_QUANTITY);
 
 for (let i = 0; i < offers.length; i++) {
-  fragment.append(renderOffer(offers[i]));
+  fragmentPinList.append(renderOfferPin(offers[i]));
 }
 
-ofeersZone.append(fragment);
+ofersZone.append(fragmentPinList);
+
+fragmentOfferCards.append(renderOfferCards(offers[0]));
+
+map.insertBefore(fragmentOfferCards, map.querySelector(`.map__filters-container`));
 
 document.querySelector(`.map`).classList.remove(`map--faded`);
+
