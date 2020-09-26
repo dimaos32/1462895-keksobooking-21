@@ -1,5 +1,24 @@
 'use strict';
 
+const MOCKS_QUANTITY = 8;
+
+const PRICE_MIN = 1;
+const PRICE_MAX = 50;
+const PRICE_STEP = 1000;
+
+const ROOMS_MIN = 1;
+const ROOMS_MAX = 4;
+
+const GUESTS_MIN = 2;
+const GUESTS_MAX = 10;
+
+const LOCATION_X_MIN = 0;
+const LOCATION_Y_MIN = 130;
+const LOCATION_Y_MAX = 630;
+
+const PIN_WIDTH = 50;
+const PIN_HEIGHT = 70;
+
 const RENT_WORDS_DB = [
   `Сдам`,
   `Сдается`,
@@ -8,14 +27,11 @@ const RENT_WORDS_DB = [
   `Сдается жилье -`,
   `Специально для вас -`,
 ];
+
 const TYPES_DB = [`palace`, `flat`, `house`, `bungalow`];
-const TYPES_DB_RU = {
-  palace: `Дворец`,
-  flat: `Квартира`,
-  house: `Дом`,
-  bungalow: `Бунгало`,
-};
+
 const CHECK_IN_OUT_DB = [`12:00`, `13:00`, `14:00`];
+
 const FEATURES_DB = [
   `wifi`,
   `dishwasher`,
@@ -24,6 +40,7 @@ const FEATURES_DB = [
   `elevator`,
   `conditioner`,
 ];
+
 const DESCRIPTION_WORDS_DB = [
   `красивые виды из окон.`,
   `тихий район.`,
@@ -31,21 +48,26 @@ const DESCRIPTION_WORDS_DB = [
   `центр города.`,
   `ярко выраженный местный колорит.`,
 ];
+
 const PHOTOS_DB = [
   `http://o0.github.io/assets/images/tokyo/hotel1.jpg`,
   `http://o0.github.io/assets/images/tokyo/hotel2.jpg`,
   `http://o0.github.io/assets/images/tokyo/hotel3.jpg`,
 ];
 
-const offersField = document.querySelector(`.map__pins`);
+const typesMap = {
+  palace: `Дворец`,
+  flat: `Квартира`,
+  house: `Дом`,
+  bungalow: `Бунгало`,
+};
+
+const ofeersZone = document.querySelector(`.map__pins`);
 const pinTemplate = document.querySelector(`#pin`)
   .content
   .querySelector(`button`);
 
 const fragment = document.createDocumentFragment();
-
-const PIN_WIDTH = 50;
-const PIN_HEIGHT = 70;
 
 const getRandomIntNumber = (min = 0, max = 100) => {
   return min + Math.floor(Math.random() * (max - min + 1));
@@ -65,6 +87,14 @@ const getRandomArrayElements = (arr, n = 1) => {
   return randomArray;
 };
 
+const getTitle = (type) => {
+  return `${RENT_WORDS_DB[getRandomIntNumber(0, RENT_WORDS_DB.length - 1)]} ${typesMap[type]}${(Math.random() < 0.5 ? `!` : `.`)}`;
+};
+
+const getDescription = (type, rooms) => {
+  return `${typesMap[type]}, кол-во комнат - ${rooms}, ${DESCRIPTION_WORDS_DB[getRandomIntNumber(0, DESCRIPTION_WORDS_DB.length - 1)]}`;
+};
+
 const generateMocks = (n) => {
   const generatedMocks = [];
 
@@ -79,15 +109,15 @@ const generateMocks = (n) => {
   for (let i = 0; i < n; i++) {
     const mock = {
       author: {
-        avatar: `img/avatars/user` + avatarNumbers[i] + `.png`
+        avatar: `img/avatars/user${avatarNumbers[i]}.png`
       },
       offer: {
         title: ``,
         address: ``,
-        price: getRandomIntNumber(1, 50) * 1000,
+        price: getRandomIntNumber(PRICE_MIN, PRICE_MAX) * PRICE_STEP,
         type: TYPES_DB[getRandomIntNumber(0, TYPES_DB.length - 1)],
-        rooms: getRandomIntNumber(1, 4),
-        guests: getRandomIntNumber(1, 10),
+        rooms: getRandomIntNumber(ROOMS_MIN, ROOMS_MAX),
+        guests: getRandomIntNumber(GUESTS_MIN, GUESTS_MAX),
         checkin: CHECK_IN_OUT_DB[getRandomIntNumber(0, CHECK_IN_OUT_DB.length - 1)],
         checkout: CHECK_IN_OUT_DB[getRandomIntNumber(0, CHECK_IN_OUT_DB.length - 1)],
         features: getRandomArrayElements(FEATURES_DB, getRandomIntNumber(1, FEATURES_DB.length)),
@@ -95,14 +125,14 @@ const generateMocks = (n) => {
         photos: getRandomArrayElements(PHOTOS_DB, getRandomIntNumber(1, PHOTOS_DB.length))
       },
       location: {
-        x: getRandomIntNumber(25, 1175),
-        y: getRandomIntNumber(130, 630)
+        x: getRandomIntNumber(LOCATION_X_MIN, ofeersZone.offsetWidth),
+        y: getRandomIntNumber(LOCATION_Y_MIN, LOCATION_Y_MAX)
       }
     };
 
-    mock.offer.title = `${RENT_WORDS_DB[getRandomIntNumber(0, RENT_WORDS_DB.length - 1)]} ${TYPES_DB_RU[mock.offer.type]}${(getRandomIntNumber(0, 1) ? `!` : `.`)}`;
+    mock.offer.title = getTitle(mock.offer.type);
     mock.offer.address = `${mock.location.x} ${mock.location.y}`;
-    mock.offer.description = `${TYPES_DB_RU[mock.offer.type]}, кол-во комнат - ${mock.offer.rooms}, ${DESCRIPTION_WORDS_DB[getRandomIntNumber(0, DESCRIPTION_WORDS_DB.length - 1)]}`;
+    mock.offer.description = getDescription(mock.offer.type, mock.offer.rooms);
 
     generatedMocks.push(mock);
   }
@@ -120,12 +150,12 @@ const renderOffer = (offer) => {
   return offerPreset;
 };
 
-const offers = generateMocks(8);
+const offers = generateMocks(MOCKS_QUANTITY);
 
 for (let i = 0; i < offers.length; i++) {
   fragment.append(renderOffer(offers[i]));
 }
 
-offersField.append(fragment);
+ofeersZone.append(fragment);
 
 document.querySelector(`.map`).classList.remove(`map--faded`);
