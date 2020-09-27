@@ -162,28 +162,85 @@ const renderOfferPin = (offer) => {
 const renderOfferCards = (offer) => {
   const offerPreset = cardTemplate.cloneNode(true);
 
-  offerPreset.querySelector(`.popup__avatar`).src = offer.author.avatar;
-  offerPreset.querySelector(`.popup__title`).textContent = offer.offer.title;
-  offerPreset.querySelector(`.popup__text--address`).textContent = offer.offer.address;
-  offerPreset.querySelector(`.popup__text--price`).innerHTML = `${offer.offer.price}&#x20bd;<span>/ночь</span>`;
-  offerPreset.querySelector(`.popup__type`).textContent = typesMap[offer.offer.type];
-  offerPreset.querySelector(`.popup__text--capacity`).textContent = `${offer.offer.rooms} комнаты для ${offer.offer.guests} гостей`;
-  offerPreset.querySelector(`.popup__text--time`).textContent = `Заезд после ${offer.offer.checkin}, выезд до ${offer.offer.checkout}`;
-  offerPreset.querySelector(`.popup__description`).textContent = offer.offer.description;
-
-  for (let i = 0; i < FEATURES_DB.length; i++) {
-    if (!offer.offer.features.includes(FEATURES_DB[i])) {
-      offerPreset.querySelector(`.popup__feature--${(FEATURES_DB[i])}`).remove();
-    }
+  if (offer.author.avatar) {
+    offerPreset.querySelector(`.popup__avatar`).src = offer.author.avatar;
+  } else {
+    offerPreset.querySelector(`.popup__avatar`)
+      .classList.add(`hidden`);
   }
 
-  for (let i = 0; i < offer.offer.photos.length; i++) {
-    offerPreset.querySelectorAll(`.popup__photo`)[i].src = offer.offer.photos[i];
+  if (offer.offer.title) {
+    offerPreset.querySelector(`.popup__title`).textContent = offer.offer.title;
+  } else {
+    offerPreset.querySelector(`.popup__title`)
+      .classList.add(`hidden`);
+  }
 
-    if (i < offer.offer.photos.length - 1) {
-      offerPreset.querySelector(`.popup__photos`)
-        .append(offerPreset.querySelector(`.popup__photo`).cloneNode());
+  if (offer.offer.address) {
+    offerPreset.querySelector(`.popup__text--address`).textContent = offer.offer.address;
+  } else {
+    offerPreset.querySelector(`.popup__text--address`)
+      .classList.add(`hidden`);
+  }
+
+  if (offer.offer.price) {
+    offerPreset.querySelector(`.popup__text--price`).innerHTML = `${offer.offer.price}&#x20bd;<span>/ночь</span>`;
+  } else {
+    offerPreset.querySelector(`.popup__text--price`)
+      .classList.add(`hidden`);
+  }
+
+  if (offer.offer.type) {
+    offerPreset.querySelector(`.popup__type`).textContent = typesMap[offer.offer.type];
+  } else {
+    offerPreset.querySelector(`.popup__type`)
+      .classList.add(`hidden`);
+  }
+
+  if (offer.offer.rooms && offer.offer.guests) {
+    offerPreset.querySelector(`.popup__text--capacity`).textContent = `${offer.offer.rooms} комнаты для ${offer.offer.guests} гостей`;
+  } else {
+    offerPreset.querySelector(`.popup__text--capacity`)
+      .classList.add(`hidden`);
+  }
+
+  if (offer.offer.checkin && offer.offer.checkout) {
+    offerPreset.querySelector(`.popup__text--time`).textContent = `Заезд после ${offer.offer.checkin}, выезд до ${offer.offer.checkout}`;
+  } else {
+    offerPreset.querySelector(`.popup__text--time`)
+      .classList.add(`hidden`);
+  }
+
+  if (offer.offer.type && offer.offer.rooms) {
+    offerPreset.querySelector(`.popup__description`).textContent = offer.offer.description;
+  } else {
+    offerPreset.querySelector(`.popup__description`)
+      .classList.add(`hidden`);
+  }
+
+  if (offer.offer.features.length) {
+    for (let i = 0; i < FEATURES_DB.length; i++) {
+      if (!offer.offer.features.includes(FEATURES_DB[i])) {
+        offerPreset.querySelector(`.popup__feature--${(FEATURES_DB[i])}`).remove();
+      }
     }
+  } else {
+    offerPreset.querySelector(`.popup__features`)
+      .classList.add(`hidden`);
+  }
+
+  if (offer.offer.photos.length) {
+    for (let i = 0; i < offer.offer.photos.length; i++) {
+      offerPreset.querySelectorAll(`.popup__photo`)[i].src = offer.offer.photos[i];
+
+      if (i < offer.offer.photos.length - 1) {
+        offerPreset.querySelector(`.popup__photos`)
+          .append(offerPreset.querySelector(`.popup__photo`).cloneNode());
+      }
+    }
+  } else {
+    offerPreset.querySelector(`.popup__photo`)
+      .classList.add(`hidden`);
   }
 
   return offerPreset;
