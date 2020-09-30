@@ -7,10 +7,10 @@ const PRICE_MAX = 50;
 const PRICE_STEP = 1000;
 
 const ROOMS_MIN = 1;
-const ROOMS_MAX = 4;
+const ROOMS_MAX = 6;
 
 const GUESTS_MIN = 2;
-const GUESTS_MAX = 10;
+const GUESTS_MAX = 12;
 
 const LOCATION_X_MIN = 0;
 const LOCATION_Y_MIN = 130;
@@ -62,6 +62,11 @@ const typesMap = {
   bungalow: `Бунгало`,
 };
 
+const quantitativeEndingsMap = {
+  room: [`комната`, `комнаты`, `комнат`],
+  guest: [`гостя`, `гостей`, `гостей`],
+};
+
 const offersZone = document.querySelector(`.map__pins`);
 const map = document.querySelector(`.map`);
 const fragmentPinList = document.createDocumentFragment();
@@ -72,7 +77,6 @@ const pinTemplate = document.querySelector(`#pin`)
 const cardTemplate = document.querySelector(`#card`)
   .content
   .querySelector(`.popup`);
-
 const filtersContainer = map.querySelector(`.map__filters-container`);
 
 const getRandomIntNumber = (min = 0, max = 100) => {
@@ -91,6 +95,18 @@ const getRandomArrayElements = (arr, n = 1) => {
   }
 
   return randomArray;
+};
+
+const getTrueQuantitativeEndingWords = (q = 1, word) => {
+  if (q % 100 < 11 || q % 100 > 14) {
+    if (q % 10 === 1) {
+      return `${q} ${quantitativeEndingsMap[word][0]}`;
+    } else if (q % 10 > 1 && q % 10 < 5) {
+      return `${q} ${quantitativeEndingsMap[word][1]}`;
+    }
+  }
+
+  return `${q} ${quantitativeEndingsMap[word][2]}`;
 };
 
 const getTitle = (type) => {
@@ -163,20 +179,16 @@ const renderOfferCard = (item) => {
     },
     offer: {
       title,
-    address,
-    price,
-    type,
-    rooms,
-    guests,
-    checkin,
-    checkout,
-    features,
-    description,
-    photos,
-    },
-    location: {
-      x,
-      y,
+      address,
+      price,
+      type,
+      rooms,
+      guests,
+      checkin,
+      checkout,
+      features,
+      description,
+      photos,
     },
   } = item;
 
@@ -188,13 +200,13 @@ const renderOfferCard = (item) => {
   offerPreset.querySelector(`.popup__type`).textContent = typesMap[type];
 
   if (price) {
-    offerPreset.querySelector(`.popup__text--price`).innerHTML =`${price}&#x20bd;<span>/ночь</span>`;
+    offerPreset.querySelector(`.popup__text--price`).innerHTML = `${price}&#x20bd;<span>/ночь</span>`;
   } else {
     offerPreset.querySelector(`.popup__text--price`).textContent = ``;
   }
 
   if (rooms && guests) {
-    offerPreset.querySelector(`.popup__text--capacity`).textContent = `${rooms} комнаты для ${guests} гостей`;
+    offerPreset.querySelector(`.popup__text--capacity`).textContent = `${getTrueQuantitativeEndingWords(rooms, `room`)} для ${getTrueQuantitativeEndingWords(guests, `guest`)}`;
   } else {
     offerPreset.querySelector(`.popup__text--capacity`).textContent = ``;
   }
@@ -211,7 +223,7 @@ const renderOfferCard = (item) => {
     offerPreset.querySelector(`.popup__description`).textContent = ``;
   }
 
-  const popupFeatures = offerPreset.querySelector('.popup__features');
+  const popupFeatures = offerPreset.querySelector(`.popup__features`);
 
   popupFeatures.innerHTML = ``;
 
@@ -239,12 +251,12 @@ const renderOfferCard = (item) => {
     if (
       (!offerPreset.children[i].textContent && i > 1 && i !== 8 && i !== 10) ||
       (!offerPreset.children[i].src && i === 0) ||
-      (!offerPreset.children[i].querySelectorAll('li').length && i === 8) ||
-      (!offerPreset.children[i].querySelectorAll('img').length && i === 10)
+      (!offerPreset.children[i].querySelectorAll(`li`).length && i === 8) ||
+      (!offerPreset.children[i].querySelectorAll(`img`).length && i === 10)
     ) {
-      offerPreset.children[i].classList.add('hidden');
+      offerPreset.children[i].classList.add(`hidden`);
     }
-  };
+  }
 
   return offerPreset;
 };
