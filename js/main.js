@@ -182,76 +182,55 @@ const renderOfferCard = (item) => {
 
   const offerPreset = cardTemplate.cloneNode(true);
 
-  if (avatar) {
-    offerPreset.querySelector(`.popup__avatar`).src = avatar;
-  } else {
-    offerPreset.querySelector(`.popup__avatar`).classList.add(`hidden`);
-  }
-
-  if (title) {
-    offerPreset.querySelector(`.popup__title`).textContent = title;
-  } else {
-    offerPreset.querySelector(`.popup__title`).classList.add(`hidden`);
-  }
-
-  if (address) {
-    offerPreset.querySelector(`.popup__text--address`).textContent = address;
-  } else {
-    offerPreset.querySelector(`.popup__text--address`).classList.add(`hidden`);
-  }
+  offerPreset.querySelector(`.popup__avatar`).src = avatar;
+  offerPreset.querySelector(`.popup__title`).textContent = title;
+  offerPreset.querySelector(`.popup__text--address`).textContent = address;
+  offerPreset.querySelector(`.popup__type`).textContent = typesMap[type];
 
   if (price) {
-    offerPreset.querySelector(`.popup__text--price`).innerHTML = `${price}&#x20bd;<span>/ночь</span>`;
+    offerPreset.querySelector(`.popup__text--price`).innerHTML =`${price}&#x20bd;<span>/ночь</span>`;
   } else {
-    offerPreset.querySelector(`.popup__text--price`).classList.add(`hidden`);
-  }
-
-  if (type) {
-    offerPreset.querySelector(`.popup__type`).textContent = typesMap[type];
-  } else {
-    offerPreset.querySelector(`.popup__type`).classList.add(`hidden`);
+    offerPreset.querySelector(`.popup__text--price`).textContent = ``;
   }
 
   if (rooms && guests) {
     offerPreset.querySelector(`.popup__text--capacity`).textContent = `${rooms} комнаты для ${guests} гостей`;
   } else {
-    offerPreset.querySelector(`.popup__text--capacity`).classList.add(`hidden`);
+    offerPreset.querySelector(`.popup__text--capacity`).textContent = ``;
   }
 
   if (checkin && checkout) {
     offerPreset.querySelector(`.popup__text--time`).textContent = `Заезд после ${checkin}, выезд до ${checkout}`;
   } else {
-    offerPreset.querySelector(`.popup__text--time`).classList.add(`hidden`);
+    offerPreset.querySelector(`.popup__text--time`).textContent = ``;
   }
 
   if (type && rooms) {
     offerPreset.querySelector(`.popup__description`).textContent = description;
   } else {
-    offerPreset.querySelector(`.popup__description`).classList.add(`hidden`);
+    offerPreset.querySelector(`.popup__description`).textContent = ``;
   }
 
-  if (features.length) {
-    for (let i = 0; i < FEATURES_DB.length; i++) {
-      if (!features.includes(FEATURES_DB[i])) {
-        offerPreset.querySelector(`.popup__feature--${(FEATURES_DB[i])}`).remove();
-      }
+  for (let i = 0; i < FEATURES_DB.length; i++) {
+    if (!features.includes(FEATURES_DB[i])) {
+      offerPreset.querySelector(`.popup__feature--${(FEATURES_DB[i])}`).remove();
     }
-  } else {
-    offerPreset.querySelector(`.popup__features`).classList.add(`hidden`);
   }
 
-  if (photos.length) {
-    for (let i = 0; i < photos.length; i++) {
-      offerPreset.querySelectorAll(`.popup__photo`)[i].src = photos[i];
+  for (let i = 0; i < photos.length; i++) {
+    offerPreset.querySelectorAll(`.popup__photo`)[i].src = photos[i];
 
-      if (i < photos.length - 1) {
-        offerPreset.querySelector(`.popup__photos`)
-          .append(offerPreset.querySelector(`.popup__photo`).cloneNode());
-      }
+    if (i < photos.length - 1) {
+      offerPreset.querySelector(`.popup__photos`)
+        .append(offerPreset.querySelector(`.popup__photo`).cloneNode());
     }
-  } else {
-    offerPreset.querySelector(`.popup__photo`).classList.add(`hidden`);
   }
+
+  for (let i = 0; i < offerPreset.children.length; i++) {
+    if (!offerPreset.children[i].textContent && i > 1 && i !== 8 && i !== 10) {
+      offerPreset.children[i].remove();
+    }
+  };
 
   return offerPreset;
 };
