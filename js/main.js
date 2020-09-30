@@ -211,10 +211,15 @@ const renderOfferCard = (item) => {
     offerPreset.querySelector(`.popup__description`).textContent = ``;
   }
 
-  for (let i = 0; i < FEATURES_DB.length; i++) {
-    if (!features.includes(FEATURES_DB[i])) {
-      offerPreset.querySelector(`.popup__feature--${(FEATURES_DB[i])}`).remove();
-    }
+  const popupFeatures = offerPreset.querySelector('.popup__features');
+
+  popupFeatures.innerHTML = ``;
+
+  for (let i = 0; i < features.length; i++) {
+    const feature = document.createElement(`li`);
+    feature.classList.add(`popup__feature`);
+    feature.classList.add(`popup__feature--${features[i]}`);
+    popupFeatures.append(feature);
   }
 
   for (let i = 0; i < photos.length; i++) {
@@ -226,9 +231,18 @@ const renderOfferCard = (item) => {
     }
   }
 
+  if (!photos) {
+    offerPreset.querySelector(`.popup__photo`).remove();
+  }
+
   for (let i = 0; i < offerPreset.children.length; i++) {
-    if (!offerPreset.children[i].textContent && i > 1 && i !== 8 && i !== 10) {
-      offerPreset.children[i].remove();
+    if (
+      (!offerPreset.children[i].textContent && i > 1 && i !== 8 && i !== 10) ||
+      (!offerPreset.children[i].src && i === 0) ||
+      (!offerPreset.children[i].querySelectorAll('li').length && i === 8) ||
+      (!offerPreset.children[i].querySelectorAll('img').length && i === 10)
+    ) {
+      offerPreset.children[i].classList.add('hidden');
     }
   };
 
@@ -245,4 +259,3 @@ offersZone.append(fragmentPinList);
 fragmentOfferCards.append(renderOfferCard(offers[0]));
 map.insertBefore(fragmentOfferCards, filtersContainer);
 map.classList.remove(`map--faded`);
-
