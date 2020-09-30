@@ -7,10 +7,10 @@ const PRICE_MAX = 50;
 const PRICE_STEP = 1000;
 
 const ROOMS_MIN = 1;
-const ROOMS_MAX = 4;
+const ROOMS_MAX = 6;
 
 const GUESTS_MIN = 2;
-const GUESTS_MAX = 10;
+const GUESTS_MAX = 12;
 
 const LOCATION_X_MIN = 0;
 const LOCATION_Y_MIN = 130;
@@ -62,12 +62,22 @@ const typesMap = {
   bungalow: `Бунгало`,
 };
 
-const ofeersZone = document.querySelector(`.map__pins`);
+const quantitativeEndingsMap = {
+  room: [`комната`, `комнаты`, `комнат`],
+  guest: [`гостя`, `гостей`, `гостей`],
+};
+
+const offersZone = document.querySelector(`.map__pins`);
+const map = document.querySelector(`.map`);
+const fragmentPinList = document.createDocumentFragment();
+const fragmentOfferCards = document.createDocumentFragment();
 const pinTemplate = document.querySelector(`#pin`)
   .content
   .querySelector(`button`);
-
-const fragment = document.createDocumentFragment();
+const cardTemplate = document.querySelector(`#card`)
+  .content
+  .querySelector(`.popup`);
+const filtersContainer = map.querySelector(`.map__filters-container`);
 
 const getRandomIntNumber = (min = 0, max = 100) => {
   return min + Math.floor(Math.random() * (max - min + 1));
@@ -85,6 +95,18 @@ const getRandomArrayElements = (arr, n = 1) => {
   }
 
   return randomArray;
+};
+
+const getTrueQuantitativeEndingWords = (q = 1, word) => {
+  if (q % 100 < 11 || q % 100 > 14) {
+    if (q % 10 === 1) {
+      return `${q} ${quantitativeEndingsMap[word][0]}`;
+    } else if (q % 10 > 1 && q % 10 < 5) {
+      return `${q} ${quantitativeEndingsMap[word][1]}`;
+    }
+  }
+
+  return `${q} ${quantitativeEndingsMap[word][2]}`;
 };
 
 const getTitle = (type) => {
@@ -125,7 +147,7 @@ const generateMocks = (n) => {
         photos: getRandomArrayElements(PHOTOS_DB, getRandomIntNumber(1, PHOTOS_DB.length))
       },
       location: {
-        x: getRandomIntNumber(LOCATION_X_MIN, ofeersZone.offsetWidth),
+        x: getRandomIntNumber(LOCATION_X_MIN, offersZone.offsetWidth),
         y: getRandomIntNumber(LOCATION_Y_MIN, LOCATION_Y_MAX)
       }
     };
@@ -140,7 +162,7 @@ const generateMocks = (n) => {
   return generatedMocks;
 };
 
-const renderOffer = (offer) => {
+const renderOfferPin = (offer) => {
   const offerPreset = pinTemplate.cloneNode(true);
 
   offerPreset.style = `left: ${offer.location.x - PIN_WIDTH / 2}px; top: ${offer.location.y - PIN_HEIGHT}px`;
@@ -150,12 +172,102 @@ const renderOffer = (offer) => {
   return offerPreset;
 };
 
+const renderOfferCard = (item) => {
+  const {
+    author: {
+      avatar
+    },
+    offer: {
+      title,
+      address,
+      price,
+      type,
+      rooms,
+      guests,
+      checkin,
+      checkout,
+      features,
+      description,
+      photos,
+    },
+  } = item;
+
+  const offerPreset = cardTemplate.cloneNode(true);
+
+  offerPreset.querySelector(`.popup__avatar`).src = avatar;
+  offerPreset.querySelector(`.popup__title`).textContent = title;
+  offerPreset.querySelector(`.popup__text--address`).textContent = address;
+  offerPreset.querySelector(`.popup__type`).textContent = typesMap[type];
+
+  if (price) {
+    offerPreset.querySelector(`.popup__text--price`).innerHTML = `${price}&#x20bd;<span>/ночь</span>`;
+  } else {
+    offerPreset.querySelector(`.popup__text--price`).textContent = ``;
+  }
+
+  if (rooms && guests) {
+    offerPreset.querySelector(`.popup__text--capacity`).textContent = `${getTrueQuantitativeEndingWords(rooms, `room`)} для ${getTrueQuantitativeEndingWords(guests, `guest`)}`;
+  } else {
+    offerPreset.querySelector(`.popup__text--capacity`).textContent = ``;
+  }
+
+  if (checkin && checkout) {
+    offerPreset.querySelector(`.popup__text--time`).textContent = `Заезд после ${checkin}, выезд до ${checkout}`;
+  } else {
+    offerPreset.querySelector(`.popup__text--time`).textContent = ``;
+  }
+
+  if (type && rooms) {
+    offerPreset.querySelector(`.popup__description`).textContent = description;
+  } else {
+    offerPreset.querySelector(`.popup__description`).textContent = ``;
+  }
+
+  const popupFeatures = offerPreset.querySelector(`.popup__features`);
+
+  popupFeatures.innerHTML = ``;
+
+  for (let i = 0; i < features.length; i++) {
+    const feature = document.createElement(`li`);
+    feature.classList.add(`popup__feature`);
+    feature.classList.add(`popup__feature--${features[i]}`);
+    popupFeatures.append(feature);
+  }
+
+  for (let i = 0; i < photos.length; i++) {
+    offerPreset.querySelectorAll(`.popup__photo`)[i].src = photos[i];
+
+    if (i < photos.length - 1) {
+      offerPreset.querySelector(`.popup__photos`)
+        .append(offerPreset.querySelector(`.popup__photo`).cloneNode());
+    }
+  }
+
+  if (!photos) {
+    offerPreset.querySelector(`.popup__photo`).remove();
+  }
+
+  for (let i = 0; i < offerPreset.children.length; i++) {
+    if (
+      (!offerPreset.children[i].textContent && i > 1 && i !== 8 && i !== 10) ||
+      (!offerPreset.children[i].src && i === 0) ||
+      (!offerPreset.children[i].querySelectorAll(`li`).length && i === 8) ||
+      (!offerPreset.children[i].querySelectorAll(`img`).length && i === 10)
+    ) {
+      offerPreset.children[i].classList.add(`hidden`);
+    }
+  }
+
+  return offerPreset;
+};
+
 const offers = generateMocks(MOCKS_QUANTITY);
 
 for (let i = 0; i < offers.length; i++) {
-  fragment.append(renderOffer(offers[i]));
+  fragmentPinList.append(renderOfferPin(offers[i]));
 }
 
-ofeersZone.append(fragment);
-
-document.querySelector(`.map`).classList.remove(`map--faded`);
+offersZone.append(fragmentPinList);
+fragmentOfferCards.append(renderOfferCard(offers[0]));
+map.insertBefore(fragmentOfferCards, filtersContainer);
+map.classList.remove(`map--faded`);
