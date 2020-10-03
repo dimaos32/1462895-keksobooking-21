@@ -274,7 +274,11 @@ const offers = generateMocks(MOCKS_QUANTITY);
 
 // map.classList.remove(`map--faded`);
 
-const addForm = document.querySelector(`.ad-form`);
+const MAIN_MAP_PIN_WIDTH = 65;
+const MAIN_MAP_PIN_HEIGHT = 65;
+
+const adForm = document.querySelector(`.ad-form`);
+const adFormAddress = adForm.querySelector(`#address`);
 const mainMapPin = map.querySelector(`.map__pin--main`);
 
 const activateFormElements = (form) => {
@@ -293,16 +297,27 @@ const deactivateFormElements = (form) => {
   });
 }
 
-deactivateFormElements(addForm);
+adFormAddress.value = '603, 408';
+
+const completeAddresInput = () => {
+  adFormAddress.value = `${
+    Math.round(parseInt(mainMapPin.style.left, 10) + MAIN_MAP_PIN_WIDTH / 2)
+  }, ${
+    Math.round(parseInt(mainMapPin.style.top, 10) + MAIN_MAP_PIN_HEIGHT / 2)
+  }`;
+};
+
+deactivateFormElements(adForm);
 
 mainMapPin.addEventListener(`mousedown`, function (evt) {
   if (evt.button === 0) {
-    activateFormElements(addForm);
+    activateFormElements(adForm);
+    completeAddresInput();
   }
 });
 
 mainMapPin.addEventListener(`keydown`, function (evt) {
   if (evt.key === `Enter`) {
-    activateFormElements(addForm);
+    activateFormElements(adForm);
   }
 });
