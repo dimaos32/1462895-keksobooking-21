@@ -263,11 +263,46 @@ const renderOfferCard = (item) => {
 
 const offers = generateMocks(MOCKS_QUANTITY);
 
-for (let i = 0; i < offers.length; i++) {
-  fragmentPinList.append(renderOfferPin(offers[i]));
+// for (let i = 0; i < offers.length; i++) {
+//   fragmentPinList.append(renderOfferPin(offers[i]));
+// }
+
+// offersZone.append(fragmentPinList);
+
+// fragmentOfferCards.append(renderOfferCard(offers[0]));
+// map.insertBefore(fragmentOfferCards, filtersContainer);
+
+// map.classList.remove(`map--faded`);
+
+const addForm = document.querySelector(`.ad-form`);
+const mainMapPin = map.querySelector(`.map__pin--main`);
+
+const activateFormElements = (form) => {
+  const fieldsets = form.querySelectorAll(`fieldset`);
+
+  fieldsets.forEach(function (fieldset) {
+    fieldset.disabled = false;
+  });
 }
 
-offersZone.append(fragmentPinList);
-fragmentOfferCards.append(renderOfferCard(offers[0]));
-map.insertBefore(fragmentOfferCards, filtersContainer);
-map.classList.remove(`map--faded`);
+const deactivateFormElements = (form) => {
+  const fieldsets = form.querySelectorAll(`fieldset`);
+
+  fieldsets.forEach(function (fieldset) {
+    fieldset.disabled = true;
+  });
+}
+
+deactivateFormElements(addForm);
+
+mainMapPin.addEventListener(`mousedown`, function (evt) {
+  if (evt.button === 0) {
+    activateFormElements(addForm);
+  }
+});
+
+mainMapPin.addEventListener(`keydown`, function (evt) {
+  if (evt.key === `Enter`) {
+    activateFormElements(addForm);
+  }
+});
