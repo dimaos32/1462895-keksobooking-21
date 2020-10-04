@@ -324,13 +324,25 @@ const changeCapacityOptions = () => {
   }
 };
 
+let isPageActivated = false;
+
+const activatePage = () => {
+  if (!isPageActivated) {
+    activateFormElements(adForm);
+    completeAddresInput();
+    map.classList.remove(`map--faded`);
+
+    offers.forEach((pin) => {
+      fragmentPinList.append(renderOfferPin(pin));
+    });
+
+    offersZone.append(fragmentPinList);
+
+    isPageActivated = true;
+  }
+};
+
 const offers = generateMocks(MOCKS_QUANTITY);
-
-offers.forEach((pin) => {
-  fragmentPinList.append(renderOfferPin(pin));
-});
-
-offersZone.append(fragmentPinList);
 
 adFormAddress.value = `603, 408`;
 
@@ -343,17 +355,13 @@ adFormPrice.min = minPrice;
 
 mainMapPin.addEventListener(`mousedown`, (evt) => {
   if (evt.button === 0) {
-    activateFormElements(adForm);
-    completeAddresInput();
-    map.classList.remove(`map--faded`);
+    activatePage();
   }
 });
 
 mainMapPin.addEventListener(`keydown`, (evt) => {
   if (evt.key === `Enter`) {
-    activateFormElements(adForm);
-    completeAddresInput();
-    map.classList.remove(`map--faded`);
+    activatePage();
   }
 });
 
