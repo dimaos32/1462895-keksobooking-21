@@ -91,19 +91,17 @@ const capacityOptions = {
       <option value="2">для 2 гостей</option>
       <option value="1" selected>для 1 гостя</option>`,
   100: `<option value="0" selected>не для гостей</option>`,
-}
+};
 
 const offersZone = document.querySelector(`.map__pins`);
 const map = document.querySelector(`.map`);
 const fragmentPinList = document.createDocumentFragment();
-const fragmentOfferCards = document.createDocumentFragment();
 const pinTemplate = document.querySelector(`#pin`)
   .content
   .querySelector(`button`);
 const cardTemplate = document.querySelector(`#card`)
   .content
   .querySelector(`.popup`);
-const filtersContainer = map.querySelector(`.map__filters-container`);
 const adForm = document.querySelector(`.ad-form`);
 const adFormTitle = adForm.querySelector(`#title`);
 const adFormAddress = adForm.querySelector(`#address`);
@@ -209,7 +207,7 @@ const renderOfferPin = (offer) => {
   const offerPreset = pinTemplate.cloneNode(true);
 
   offerPreset.style = `left: ${offer.location.x - PIN_WIDTH / 2}px; top: ${offer.location.y - PIN_HEIGHT}px`;
-  offerPreset.dataset.id = `${offer.id}`
+  offerPreset.dataset.id = `${offer.id}`;
   offerPreset.querySelector(`img`).src = `${offer.author.avatar}`;
   offerPreset.querySelector(`img`).alt = `${offer.offer.title}`;
 
@@ -369,7 +367,57 @@ const deactivatePage = () => {
   const minPrice = minPricesMap[adFormType.value];
   adFormPrice.placeholder = minPrice;
   adFormPrice.min = minPrice;
-}
+};
+
+const openPopup = (id) => {
+  openedCard = renderOfferCard(offers[id]);
+  map.append(openedCard);
+
+  popupClose = openedCard.querySelector(`.popup__close`);
+  popupClose.addEventListener(`click`, onPopupClose);
+  popupClose.addEventListener(`keydown`, onPopupEnterPress);
+  document.addEventListener(`keydown`, onPopupEscPress);
+};
+
+const closePopup = () => {
+  if (openedCard) {
+    map.removeChild(openedCard);
+    openedCard = undefined;
+    popupClose.removeEventListener(`click`, onPopupClose);
+    popupClose.removeEventListener(`keydown`, onPopupEnterPress);
+    document.removeEventListener(`keydown`, onPopupEscPress);
+  }
+};
+
+const onPopupClose = () => {
+  closePopup();
+};
+
+const onPopupEscPress = (evt) => {
+  if (evt.key === `Escape`) {
+    evt.preventDefault();
+    closePopup();
+  }
+};
+
+const onPopupEnterPress = (evt) => {
+  if (evt.key === `Enter`) {
+    evt.preventDefault();
+    closePopup();
+  }
+};
+
+const openOffer = (evt) => {
+  let id = evt.target.dataset.id;
+  if (evt.target.tagName !== `BUTTON`) {
+    id = evt.target.parentNode.dataset.id;
+  }
+
+  if (id) {
+    closePopup();
+    openPopup(id);
+  }
+};
 
 deactivatePage();
 
@@ -433,14 +481,16 @@ adFormRoomNumber.addEventListener(`change`, () => {
   changeCapacityOptions();
 });
 
-offersZone.addEventListener(`click`, (evt) => {
-  let id = evt.target.dataset.id;
-  if (evt.target.tagName !== `BUTTON`) {
-    id = evt.target.parentNode.dataset.id;
-  }
+let openedCard;
+let popupClose;
 
-  if (id) {
-    fragmentOfferCards.append(renderOfferCard(offers[id]));
-    map.append(fragmentOfferCards);
+offersZone.addEventListener(`click`, (evt) => {
+  openOffer(evt);
+});
+
+
+offersZone.addEventListener(`keydown`, (evt) => {
+  if (evt.key === `Enter`) {
+    openOffer(evt);
   }
 });
