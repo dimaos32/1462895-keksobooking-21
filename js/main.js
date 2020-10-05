@@ -19,8 +19,9 @@ const LOCATION_Y_MAX = 630;
 const PIN_WIDTH = 50;
 const PIN_HEIGHT = 70;
 
-const MAIN_MAP_PIN_WIDTH = 65;
-const MAIN_MAP_PIN_HEIGHT = 65;
+const MAIN_MAP_PIN_WIDTH = 62;
+const MAIN_MAP_PIN_HEIGHT = 62;
+const MAIN_MAP_PIN_NEEDLE_HEIGHT = 22;
 
 const MIN_TITLE_LENGTH = 30;
 const MAX_TITLE_LENGTH = 100;
@@ -82,7 +83,15 @@ const minPricesMap = {
 //   guest: [`гостя`, `гостей`, `гостей`],
 // };
 
-let minPrice;
+const capacityOptions = {
+  1: `<option value="1" selected>для 1 гостя</option>`,
+  2: `<option value="2">для 2 гостей</option>
+      <option value="1" selected>для 1 гостя</option>`,
+  3: `<option value="3">для 3 гостей</option>
+      <option value="2">для 2 гостей</option>
+      <option value="1" selected>для 1 гостя</option>`,
+  100: `<option value="0" selected>не для гостей</option>`,
+}
 
 const offersZone = document.querySelector(`.map__pins`);
 const map = document.querySelector(`.map`);
@@ -100,6 +109,7 @@ const adFormTitle = adForm.querySelector(`#title`);
 const adFormAddress = adForm.querySelector(`#address`);
 const adFormPrice = adForm.querySelector(`#price`);
 const adFormType = adForm.querySelector(`#type`);
+const adFormTime = adForm.querySelector(`.ad-form__element--time`);
 const adFormTimein = adForm.querySelector(`#timein`);
 const adFormTimeout = adForm.querySelector(`#timeout`);
 const adFormRoomNumber = adForm.querySelector(`#room_number`);
@@ -291,7 +301,7 @@ const renderOfferPin = (offer) => {
 const activateFormElements = (form) => {
   const fieldsets = form.querySelectorAll(`fieldset`);
 
-  fieldsets.forEach(function (fieldset) {
+  fieldsets.forEach((fieldset) => {
     fieldset.disabled = false;
   });
 };
@@ -299,59 +309,63 @@ const activateFormElements = (form) => {
 const deactivateFormElements = (form) => {
   const fieldsets = form.querySelectorAll(`fieldset`);
 
-  fieldsets.forEach(function (fieldset) {
+  fieldsets.forEach((fieldset) => {
     fieldset.disabled = true;
   });
 };
 
 const completeAddresInput = () => {
-  adFormAddress.value = `${
-    Math.round(parseInt(mainMapPin.style.left, 10) + MAIN_MAP_PIN_WIDTH / 2)
-  }, ${
-    Math.round(parseInt(mainMapPin.style.top, 10) + MAIN_MAP_PIN_HEIGHT / 2)
-  }`;
+  if (isPageActivated) {
+    adFormAddress.value = `${
+      Math.round(parseInt(mainMapPin.style.left, 10) + MAIN_MAP_PIN_WIDTH / 2)
+    }, ${
+      Math.round(parseInt(mainMapPin.style.top, 10) + MAIN_MAP_PIN_HEIGHT + MAIN_MAP_PIN_NEEDLE_HEIGHT)
+    }`;
+  } else {
+    adFormAddress.value = `${
+      Math.round(parseInt(mainMapPin.style.left, 10) + MAIN_MAP_PIN_WIDTH / 2)
+    }, ${
+      Math.round(parseInt(mainMapPin.style.top, 10) + MAIN_MAP_PIN_HEIGHT / 2)
+    }`;
+  }
 };
 
 const changeCapacityOptions = () => {
-  if (adFormRoomNumber.value === `1`) {
-    adFormCapacity.innerHTML = `<option value="1" selected>для 1 гостя</option>`;
-  } else if (adFormRoomNumber.value === `2`) {
-    adFormCapacity.innerHTML = `<option value="2">для 2 гостей</option><option value="1" selected>для 1 гостя</option>`;
-  } else if (adFormRoomNumber.value === `3`) {
-    adFormCapacity.innerHTML = `<option value="3">для 3 гостей</option><option value="2">для 2 гостей</option><option value="1" selected>для 1 гостя</option>`;
-  } else if (adFormRoomNumber.value === `100`) {
-    adFormCapacity.innerHTML = `<option value="0" selected>не для гостей</option>`;
-  }
+  adFormCapacity.innerHTML = capacityOptions[adFormRoomNumber.value];
 };
 
 let isPageActivated = false;
 
 const activatePage = () => {
   if (!isPageActivated) {
+    isPageActivated = true;
     activateFormElements(adForm);
     completeAddresInput();
     map.classList.remove(`map--faded`);
+    adForm.classList.remove(`ad-form--disabled`);
 
     offers.forEach((pin) => {
       fragmentPinList.append(renderOfferPin(pin));
     });
 
     offersZone.append(fragmentPinList);
-
-    isPageActivated = true;
   }
 };
 
+const deactivatePage = () => {
+  completeAddresInput();
+
+  deactivateFormElements(adForm);
+  changeCapacityOptions();
+
+  const minPrice = minPricesMap[adFormType.value];
+  adFormPrice.placeholder = minPrice;
+  adFormPrice.min = minPrice;
+}
+
+deactivatePage();
+
 const offers = generateMocks(MOCKS_QUANTITY);
-
-adFormAddress.value = `603, 408`;
-
-deactivateFormElements(adForm);
-changeCapacityOptions();
-
-minPrice = minPricesMap[adFormType.value];
-adFormPrice.placeholder = minPrice;
-adFormPrice.min = minPrice;
 
 mainMapPin.addEventListener(`mousedown`, (evt) => {
   if (evt.button === 0) {
@@ -381,6 +395,7 @@ adFormTitle.addEventListener(`input`, () => {
 
 adFormPrice.addEventListener(`input`, () => {
   const price = adFormPrice.value;
+  const minPrice = minPricesMap[adFormType.value];
 
   if (price < minPrice) {
     adFormPrice.setCustomValidity(`Минимальная цена за ночь ${minPrice} руб. Вам стоит увеличить цену.`);
@@ -394,17 +409,14 @@ adFormPrice.addEventListener(`input`, () => {
 });
 
 adFormType.addEventListener(`change`, () => {
-  minPrice = minPricesMap[adFormType.value];
+  const minPrice = minPricesMap[adFormType.value];
   adFormPrice.placeholder = minPrice;
   adFormPrice.min = minPrice;
 });
 
-adFormTimein.addEventListener(`change`, () => {
-  adFormTimeout.value = adFormTimein.value;
-});
-
-adFormTimeout.addEventListener(`change`, () => {
-  adFormTimein.value = adFormTimeout.value;
+adFormTime.addEventListener(`change`, (evt) => {
+  adFormTimeout.value = evt.target.value;
+  adFormTimein.value = evt.target.value;
 });
 
 adFormRoomNumber.addEventListener(`change`, () => {
