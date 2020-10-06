@@ -201,9 +201,13 @@ const generateMocks = (n) => {
 };
 
 const getId = (offers) => {
-  offers.forEach((offer, i) => {
+  let offersWithId = offers.slice();
+
+  offersWithId.forEach((offer, i) => {
     offer.id = `${i}`;
   });
+
+  return offersWithId;
 };
 
 const renderOfferPin = (offer) => {
@@ -314,26 +318,10 @@ const toggleFormElementsState = (form, ativate) => {
   });
 };
 
-// const activateFormElements = (form) => {
-//   const fieldsets = form.querySelectorAll(`fieldset`);
-
-//   fieldsets.forEach((fieldset) => {
-//     fieldset.disabled = false;
-//   });
-// };
-
-// const deactivateFormElements = (form) => {
-//   const fieldsets = form.querySelectorAll(`fieldset`);
-
-//   fieldsets.forEach((fieldset) => {
-//     fieldset.disabled = true;
-//   });
-// };
-
-const completeAddresInput = () => {
+const completeAddressInput = () => {
   const y = (isPageActivated)
     ? Math.round(parseInt(mainMapPin.style.top, 10) + MAIN_MAP_PIN_HEIGHT + MAIN_MAP_PIN_NEEDLE_HEIGHT)
-    : Math.round(parseInt(mainMapPin.style.top, 10) + MAIN_MAP_PIN_HEIGHT / 2)
+    : Math.round(parseInt(mainMapPin.style.top, 10) + MAIN_MAP_PIN_HEIGHT / 2);
 
   adFormAddress.value = `${Math.round(parseInt(mainMapPin.style.left, 10) + MAIN_MAP_PIN_WIDTH / 2)}, ${y}`;
 };
@@ -348,11 +336,11 @@ const activatePage = () => {
   if (!isPageActivated) {
     isPageActivated = true;
     toggleFormElementsState(adForm, true);
-    completeAddresInput();
+    completeAddressInput();
     map.classList.remove(`map--faded`);
     adForm.classList.remove(`ad-form--disabled`);
 
-    offers.forEach((pin) => {
+    offersWithId.forEach((pin) => {
       fragmentPinList.append(renderOfferPin(pin));
     });
 
@@ -362,7 +350,7 @@ const activatePage = () => {
 
 const deactivatePage = () => {
   isPageActivated = false;
-  completeAddresInput();
+  completeAddressInput();
 
   toggleFormElementsState(adForm, false);
   changeCapacityOptions();
@@ -373,7 +361,10 @@ const deactivatePage = () => {
 };
 
 const openPopup = (id) => {
-  openedCard = renderOfferCard(offers[id]);
+  const card = offersWithId.find((item) => {
+    return item.id === id;
+  });
+  openedCard = renderOfferCard(card);
   map.append(openedCard);
 
   popupClose = openedCard.querySelector(`.popup__close`);
@@ -385,10 +376,7 @@ const openPopup = (id) => {
 const closePopup = () => {
   if (openedCard) {
     map.removeChild(openedCard);
-    openedCard = undefined;
-    popupClose.removeEventListener(`click`, onPopupClose);
-    popupClose.removeEventListener(`keydown`, onPopupEnterPress);
-    document.removeEventListener(`keydown`, onPopupEscPress);
+    openedCard = null;
   }
 };
 
@@ -411,10 +399,7 @@ const onPopupEnterPress = (evt) => {
 };
 
 const openOffer = (evt) => {
-  let id = evt.target.dataset.id;
-  if (evt.target.tagName !== `BUTTON`) {
-    id = evt.target.parentNode.dataset.id;
-  }
+  const id = evt.target.closest(`.map__pin`).dataset.id;
 
   if (id) {
     closePopup();
@@ -424,9 +409,9 @@ const openOffer = (evt) => {
 
 deactivatePage();
 
-let offers = generateMocks(MOCKS_QUANTITY);
+const offers = generateMocks(MOCKS_QUANTITY);
 
-getId(offers);
+const offersWithId = getId(offers);
 
 mainMapPin.addEventListener(`mousedown`, (evt) => {
   if (evt.button === 0) {
