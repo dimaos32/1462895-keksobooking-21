@@ -119,18 +119,21 @@ const getRandomIntNumber = (min = 0, max = 100) => {
 };
 
 const getRandomArrayElements = (arr, n = 1) => {
+  let copySource = arr.slice();
   let randomArray = [];
 
-  for (let i = 0; i < arr.length && i < n; i++) {
-    const element = getRandomIntNumber(i, arr.length - 1);
-    randomArray.push(arr[element]);
-    const swap = arr[element];
-    arr[element] = arr[i];
-    arr[i] = swap;
+  for (let i = 0; i < copySource.length && i < n; i++) {
+    const element = getRandomIntNumber(i, copySource.length - 1);
+    randomArray.push(copySource[element]);
+    const swap = copySource[element];
+    copySource[element] = copySource[i];
+    copySource[i] = swap;
   }
 
   return randomArray;
 };
+
+getRandomArrayElements([1, 2, 3, 4, 5], 3);
 
 const getTrueQuantitativeEndingWords = (q = 1, word) => {
   if (q % 100 < 11 || q % 100 > 14) {
@@ -303,36 +306,36 @@ const renderOfferCard = (item) => {
   return offerPreset;
 };
 
-const activateFormElements = (form) => {
+const toggleFormElementsState = (form, ativate) => {
   const fieldsets = form.querySelectorAll(`fieldset`);
 
   fieldsets.forEach((fieldset) => {
-    fieldset.disabled = false;
+    fieldset.disabled = !ativate;
   });
 };
 
-const deactivateFormElements = (form) => {
-  const fieldsets = form.querySelectorAll(`fieldset`);
+// const activateFormElements = (form) => {
+//   const fieldsets = form.querySelectorAll(`fieldset`);
 
-  fieldsets.forEach((fieldset) => {
-    fieldset.disabled = true;
-  });
-};
+//   fieldsets.forEach((fieldset) => {
+//     fieldset.disabled = false;
+//   });
+// };
+
+// const deactivateFormElements = (form) => {
+//   const fieldsets = form.querySelectorAll(`fieldset`);
+
+//   fieldsets.forEach((fieldset) => {
+//     fieldset.disabled = true;
+//   });
+// };
 
 const completeAddresInput = () => {
-  if (isPageActivated) {
-    adFormAddress.value = `${
-      Math.round(parseInt(mainMapPin.style.left, 10) + MAIN_MAP_PIN_WIDTH / 2)
-    }, ${
-      Math.round(parseInt(mainMapPin.style.top, 10) + MAIN_MAP_PIN_HEIGHT + MAIN_MAP_PIN_NEEDLE_HEIGHT)
-    }`;
-  } else {
-    adFormAddress.value = `${
-      Math.round(parseInt(mainMapPin.style.left, 10) + MAIN_MAP_PIN_WIDTH / 2)
-    }, ${
-      Math.round(parseInt(mainMapPin.style.top, 10) + MAIN_MAP_PIN_HEIGHT / 2)
-    }`;
-  }
+  const y = (isPageActivated)
+    ? Math.round(parseInt(mainMapPin.style.top, 10) + MAIN_MAP_PIN_HEIGHT + MAIN_MAP_PIN_NEEDLE_HEIGHT)
+    : Math.round(parseInt(mainMapPin.style.top, 10) + MAIN_MAP_PIN_HEIGHT / 2)
+
+  adFormAddress.value = `${Math.round(parseInt(mainMapPin.style.left, 10) + MAIN_MAP_PIN_WIDTH / 2)}, ${y}`;
 };
 
 const changeCapacityOptions = () => {
@@ -344,7 +347,7 @@ let isPageActivated = false;
 const activatePage = () => {
   if (!isPageActivated) {
     isPageActivated = true;
-    activateFormElements(adForm);
+    toggleFormElementsState(adForm, true);
     completeAddresInput();
     map.classList.remove(`map--faded`);
     adForm.classList.remove(`ad-form--disabled`);
@@ -361,7 +364,7 @@ const deactivatePage = () => {
   isPageActivated = false;
   completeAddresInput();
 
-  deactivateFormElements(adForm);
+  toggleFormElementsState(adForm, false);
   changeCapacityOptions();
 
   const minPrice = minPricesMap[adFormType.value];
