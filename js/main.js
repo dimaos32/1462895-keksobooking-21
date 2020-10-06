@@ -19,8 +19,9 @@ const LOCATION_Y_MAX = 630;
 const PIN_WIDTH = 50;
 const PIN_HEIGHT = 70;
 
-const MAIN_MAP_PIN_WIDTH = 65;
-const MAIN_MAP_PIN_HEIGHT = 65;
+const MAIN_MAP_PIN_WIDTH = 62;
+const MAIN_MAP_PIN_HEIGHT = 62;
+const MAIN_MAP_PIN_NEEDLE_HEIGHT = 22;
 
 const MIN_TITLE_LENGTH = 30;
 const MAX_TITLE_LENGTH = 100;
@@ -77,29 +78,36 @@ const minPricesMap = {
   bungalow: 0,
 };
 
-// const quantitativeEndingsMap = {
-//   room: [`комната`, `комнаты`, `комнат`],
-//   guest: [`гостя`, `гостей`, `гостей`],
-// };
+const quantitativeEndingsMap = {
+  room: [`комната`, `комнаты`, `комнат`],
+  guest: [`гостя`, `гостей`, `гостей`],
+};
 
-let minPrice;
+const capacityOptions = {
+  1: `<option value="1" selected>для 1 гостя</option>`,
+  2: `<option value="2">для 2 гостей</option>
+      <option value="1" selected>для 1 гостя</option>`,
+  3: `<option value="3">для 3 гостей</option>
+      <option value="2">для 2 гостей</option>
+      <option value="1" selected>для 1 гостя</option>`,
+  100: `<option value="0" selected>не для гостей</option>`,
+};
 
 const offersZone = document.querySelector(`.map__pins`);
 const map = document.querySelector(`.map`);
 const fragmentPinList = document.createDocumentFragment();
-// const fragmentOfferCards = document.createDocumentFragment();
 const pinTemplate = document.querySelector(`#pin`)
   .content
   .querySelector(`button`);
-// const cardTemplate = document.querySelector(`#card`)
-  // .content
-  // .querySelector(`.popup`);
-// const filtersContainer = map.querySelector(`.map__filters-container`);
+const cardTemplate = document.querySelector(`#card`)
+  .content
+  .querySelector(`.popup`);
 const adForm = document.querySelector(`.ad-form`);
 const adFormTitle = adForm.querySelector(`#title`);
 const adFormAddress = adForm.querySelector(`#address`);
 const adFormPrice = adForm.querySelector(`#price`);
 const adFormType = adForm.querySelector(`#type`);
+const adFormTime = adForm.querySelector(`.ad-form__element--time`);
 const adFormTimein = adForm.querySelector(`#timein`);
 const adFormTimeout = adForm.querySelector(`#timeout`);
 const adFormRoomNumber = adForm.querySelector(`#room_number`);
@@ -111,30 +119,33 @@ const getRandomIntNumber = (min = 0, max = 100) => {
 };
 
 const getRandomArrayElements = (arr, n = 1) => {
+  let copySource = arr.slice();
   let randomArray = [];
 
-  for (let i = 0; i < arr.length && i < n; i++) {
-    const element = getRandomIntNumber(i, arr.length - 1);
-    randomArray.push(arr[element]);
-    const swap = arr[element];
-    arr[element] = arr[i];
-    arr[i] = swap;
+  for (let i = 0; i < copySource.length && i < n; i++) {
+    const element = getRandomIntNumber(i, copySource.length - 1);
+    randomArray.push(copySource[element]);
+    const swap = copySource[element];
+    copySource[element] = copySource[i];
+    copySource[i] = swap;
   }
 
   return randomArray;
 };
 
-// const getTrueQuantitativeEndingWords = (q = 1, word) => {
-//   if (q % 100 < 11 || q % 100 > 14) {
-//     if (q % 10 === 1) {
-//       return `${q} ${quantitativeEndingsMap[word][0]}`;
-//     } else if (q % 10 > 1 && q % 10 < 5) {
-//       return `${q} ${quantitativeEndingsMap[word][1]}`;
-//     }
-//   }
+getRandomArrayElements([1, 2, 3, 4, 5], 3);
 
-//   return `${q} ${quantitativeEndingsMap[word][2]}`;
-// };
+const getTrueQuantitativeEndingWords = (q = 1, word) => {
+  if (q % 100 < 11 || q % 100 > 14) {
+    if (q % 10 === 1) {
+      return `${q} ${quantitativeEndingsMap[word][0]}`;
+    } else if (q % 10 > 1 && q % 10 < 5) {
+      return `${q} ${quantitativeEndingsMap[word][1]}`;
+    }
+  }
+
+  return `${q} ${quantitativeEndingsMap[word][2]}`;
+};
 
 const getTitle = (type) => {
   return `${RENT_WORDS_DB[getRandomIntNumber(0, RENT_WORDS_DB.length - 1)]} ${typesMap[type]}${(Math.random() < 0.5 ? `!` : `.`)}`;
@@ -189,169 +200,218 @@ const generateMocks = (n) => {
   return generatedMocks;
 };
 
+const getId = (offers) => {
+  let offersWithId = offers.slice();
+
+  offersWithId.forEach((offer, i) => {
+    offer.id = `${i}`;
+  });
+
+  return offersWithId;
+};
+
 const renderOfferPin = (offer) => {
   const offerPreset = pinTemplate.cloneNode(true);
 
   offerPreset.style = `left: ${offer.location.x - PIN_WIDTH / 2}px; top: ${offer.location.y - PIN_HEIGHT}px`;
+  offerPreset.dataset.id = `${offer.id}`;
   offerPreset.querySelector(`img`).src = `${offer.author.avatar}`;
   offerPreset.querySelector(`img`).alt = `${offer.offer.title}`;
 
   return offerPreset;
 };
 
-// const renderOfferCard = (item) => {
-//   const {
-//     author: {
-//       avatar
-//     },
-//     offer: {
-//       title,
-//       address,
-//       price,
-//       type,
-//       rooms,
-//       guests,
-//       checkin,
-//       checkout,
-//       features,
-//       description,
-//       photos,
-//     },
-//   } = item;
+const renderOfferCard = (item) => {
+  const {
+    author: {
+      avatar
+    },
+    offer: {
+      title,
+      address,
+      price,
+      type,
+      rooms,
+      guests,
+      checkin,
+      checkout,
+      features,
+      description,
+      photos,
+    },
+  } = item;
 
-//   const offerPreset = cardTemplate.cloneNode(true);
+  const offerPreset = cardTemplate.cloneNode(true);
 
-//   offerPreset.querySelector(`.popup__avatar`).src = avatar;
-//   offerPreset.querySelector(`.popup__title`).textContent = title;
-//   offerPreset.querySelector(`.popup__text--address`).textContent = address;
-//   offerPreset.querySelector(`.popup__type`).textContent = typesMap[type];
+  offerPreset.querySelector(`.popup__avatar`).src = avatar;
+  offerPreset.querySelector(`.popup__title`).textContent = title;
+  offerPreset.querySelector(`.popup__text--address`).textContent = address;
+  offerPreset.querySelector(`.popup__type`).textContent = typesMap[type];
 
-//   if (price) {
-//     offerPreset.querySelector(`.popup__text--price`).innerHTML = `${price}&#x20bd;<span>/ночь</span>`;
-//   } else {
-//     offerPreset.querySelector(`.popup__text--price`).textContent = ``;
-//   }
+  if (price) {
+    offerPreset.querySelector(`.popup__text--price`).innerHTML = `${price}&#x20bd;<span>/ночь</span>`;
+  } else {
+    offerPreset.querySelector(`.popup__text--price`).textContent = ``;
+  }
 
-//   if (rooms && guests) {
-//     offerPreset.querySelector(`.popup__text--capacity`).textContent = `${getTrueQuantitativeEndingWords(rooms, `room`)} для ${getTrueQuantitativeEndingWords(guests, `guest`)}`;
-//   } else {
-//     offerPreset.querySelector(`.popup__text--capacity`).textContent = ``;
-//   }
+  if (rooms && guests) {
+    offerPreset.querySelector(`.popup__text--capacity`).textContent = `${getTrueQuantitativeEndingWords(rooms, `room`)} для ${getTrueQuantitativeEndingWords(guests, `guest`)}`;
+  } else {
+    offerPreset.querySelector(`.popup__text--capacity`).textContent = ``;
+  }
 
-//   if (checkin && checkout) {
-//     offerPreset.querySelector(`.popup__text--time`).textContent = `Заезд после ${checkin}, выезд до ${checkout}`;
-//   } else {
-//     offerPreset.querySelector(`.popup__text--time`).textContent = ``;
-//   }
+  if (checkin && checkout) {
+    offerPreset.querySelector(`.popup__text--time`).textContent = `Заезд после ${checkin}, выезд до ${checkout}`;
+  } else {
+    offerPreset.querySelector(`.popup__text--time`).textContent = ``;
+  }
 
-//   if (type && rooms) {
-//     offerPreset.querySelector(`.popup__description`).textContent = description;
-//   } else {
-//     offerPreset.querySelector(`.popup__description`).textContent = ``;
-//   }
+  if (type && rooms) {
+    offerPreset.querySelector(`.popup__description`).textContent = description;
+  } else {
+    offerPreset.querySelector(`.popup__description`).textContent = ``;
+  }
 
-//   const popupFeatures = offerPreset.querySelector(`.popup__features`);
+  const popupFeatures = offerPreset.querySelector(`.popup__features`);
 
-//   popupFeatures.innerHTML = ``;
+  popupFeatures.innerHTML = ``;
 
-//   for (let i = 0; i < features.length; i++) {
-//     const feature = document.createElement(`li`);
-//     feature.classList.add(`popup__feature`);
-//     feature.classList.add(`popup__feature--${features[i]}`);
-//     popupFeatures.append(feature);
-//   }
+  for (let i = 0; i < features.length; i++) {
+    const feature = document.createElement(`li`);
+    feature.classList.add(`popup__feature`);
+    feature.classList.add(`popup__feature--${features[i]}`);
+    popupFeatures.append(feature);
+  }
 
-//   for (let i = 0; i < photos.length; i++) {
-//     offerPreset.querySelectorAll(`.popup__photo`)[i].src = photos[i];
+  for (let i = 0; i < photos.length; i++) {
+    offerPreset.querySelectorAll(`.popup__photo`)[i].src = photos[i];
 
-//     if (i < photos.length - 1) {
-//       offerPreset.querySelector(`.popup__photos`)
-//         .append(offerPreset.querySelector(`.popup__photo`).cloneNode());
-//     }
-//   }
+    if (i < photos.length - 1) {
+      offerPreset.querySelector(`.popup__photos`)
+        .append(offerPreset.querySelector(`.popup__photo`).cloneNode());
+    }
+  }
 
-//   if (!photos) {
-//     offerPreset.querySelector(`.popup__photo`).remove();
-//   }
+  if (!photos) {
+    offerPreset.querySelector(`.popup__photo`).remove();
+  }
 
-//   for (let i = 0; i < offerPreset.children.length; i++) {
-//     if (
-//       (!offerPreset.children[i].textContent && i > 1 && i !== 8 && i !== 10) ||
-//       (!offerPreset.children[i].src && i === 0) ||
-//       (!offerPreset.children[i].querySelectorAll(`li`).length && i === 8) ||
-//       (!offerPreset.children[i].querySelectorAll(`img`).length && i === 10)
-//     ) {
-//       offerPreset.children[i].classList.add(`hidden`);
-//     }
-//   }
+  for (let i = 0; i < offerPreset.children.length; i++) {
+    if (
+      (!offerPreset.children[i].textContent && i > 1 && i !== 8 && i !== 10) ||
+      (!offerPreset.children[i].src && i === 0) ||
+      (!offerPreset.children[i].querySelectorAll(`li`).length && i === 8) ||
+      (!offerPreset.children[i].querySelectorAll(`img`).length && i === 10)
+    ) {
+      offerPreset.children[i].classList.add(`hidden`);
+    }
+  }
 
-//   return offerPreset;
-// };
+  return offerPreset;
+};
 
-const activateFormElements = (form) => {
+const toggleFormElementsState = (form, ativate) => {
   const fieldsets = form.querySelectorAll(`fieldset`);
 
-  fieldsets.forEach(function (fieldset) {
-    fieldset.disabled = false;
+  fieldsets.forEach((fieldset) => {
+    fieldset.disabled = !ativate;
   });
 };
 
-const deactivateFormElements = (form) => {
-  const fieldsets = form.querySelectorAll(`fieldset`);
+const completeAddressInput = () => {
+  const y = (isPageActivated)
+    ? Math.round(parseInt(mainMapPin.style.top, 10) + MAIN_MAP_PIN_HEIGHT + MAIN_MAP_PIN_NEEDLE_HEIGHT)
+    : Math.round(parseInt(mainMapPin.style.top, 10) + MAIN_MAP_PIN_HEIGHT / 2);
 
-  fieldsets.forEach(function (fieldset) {
-    fieldset.disabled = true;
-  });
-};
-
-const completeAddresInput = () => {
-  adFormAddress.value = `${
-    Math.round(parseInt(mainMapPin.style.left, 10) + MAIN_MAP_PIN_WIDTH / 2)
-  }, ${
-    Math.round(parseInt(mainMapPin.style.top, 10) + MAIN_MAP_PIN_HEIGHT / 2)
-  }`;
+  adFormAddress.value = `${Math.round(parseInt(mainMapPin.style.left, 10) + MAIN_MAP_PIN_WIDTH / 2)}, ${y}`;
 };
 
 const changeCapacityOptions = () => {
-  if (adFormRoomNumber.value === `1`) {
-    adFormCapacity.innerHTML = `<option value="1" selected>для 1 гостя</option>`;
-  } else if (adFormRoomNumber.value === `2`) {
-    adFormCapacity.innerHTML = `<option value="2">для 2 гостей</option><option value="1" selected>для 1 гостя</option>`;
-  } else if (adFormRoomNumber.value === `3`) {
-    adFormCapacity.innerHTML = `<option value="3">для 3 гостей</option><option value="2">для 2 гостей</option><option value="1" selected>для 1 гостя</option>`;
-  } else if (adFormRoomNumber.value === `100`) {
-    adFormCapacity.innerHTML = `<option value="0" selected>не для гостей</option>`;
-  }
+  adFormCapacity.innerHTML = capacityOptions[adFormRoomNumber.value];
 };
 
 let isPageActivated = false;
 
 const activatePage = () => {
   if (!isPageActivated) {
-    activateFormElements(adForm);
-    completeAddresInput();
+    isPageActivated = true;
+    toggleFormElementsState(adForm, true);
+    completeAddressInput();
     map.classList.remove(`map--faded`);
+    adForm.classList.remove(`ad-form--disabled`);
 
-    offers.forEach((pin) => {
+    offersWithId.forEach((pin) => {
       fragmentPinList.append(renderOfferPin(pin));
     });
 
     offersZone.append(fragmentPinList);
-
-    isPageActivated = true;
   }
 };
 
+const deactivatePage = () => {
+  isPageActivated = false;
+  completeAddressInput();
+
+  toggleFormElementsState(adForm, false);
+  changeCapacityOptions();
+
+  const minPrice = minPricesMap[adFormType.value];
+  adFormPrice.placeholder = minPrice;
+  adFormPrice.min = minPrice;
+};
+
+const openPopup = (id) => {
+  const card = offersWithId.find((item) => {
+    return item.id === id;
+  });
+  openedCard = renderOfferCard(card);
+  map.append(openedCard);
+
+  popupClose = openedCard.querySelector(`.popup__close`);
+  popupClose.addEventListener(`click`, onPopupClose);
+  popupClose.addEventListener(`keydown`, onPopupEnterPress);
+  document.addEventListener(`keydown`, onPopupEscPress);
+};
+
+const closePopup = () => {
+  if (openedCard) {
+    map.removeChild(openedCard);
+    openedCard = null;
+  }
+};
+
+const onPopupClose = () => {
+  closePopup();
+};
+
+const onPopupEscPress = (evt) => {
+  if (evt.key === `Escape`) {
+    evt.preventDefault();
+    closePopup();
+  }
+};
+
+const onPopupEnterPress = (evt) => {
+  if (evt.key === `Enter`) {
+    evt.preventDefault();
+    closePopup();
+  }
+};
+
+const openOffer = (evt) => {
+  const id = evt.target.closest(`.map__pin`).dataset.id;
+
+  if (id) {
+    closePopup();
+    openPopup(id);
+  }
+};
+
+deactivatePage();
+
 const offers = generateMocks(MOCKS_QUANTITY);
 
-adFormAddress.value = `603, 408`;
-
-deactivateFormElements(adForm);
-changeCapacityOptions();
-
-minPrice = minPricesMap[adFormType.value];
-adFormPrice.placeholder = minPrice;
-adFormPrice.min = minPrice;
+const offersWithId = getId(offers);
 
 mainMapPin.addEventListener(`mousedown`, (evt) => {
   if (evt.button === 0) {
@@ -381,6 +441,7 @@ adFormTitle.addEventListener(`input`, () => {
 
 adFormPrice.addEventListener(`input`, () => {
   const price = adFormPrice.value;
+  const minPrice = minPricesMap[adFormType.value];
 
   if (price < minPrice) {
     adFormPrice.setCustomValidity(`Минимальная цена за ночь ${minPrice} руб. Вам стоит увеличить цену.`);
@@ -394,19 +455,30 @@ adFormPrice.addEventListener(`input`, () => {
 });
 
 adFormType.addEventListener(`change`, () => {
-  minPrice = minPricesMap[adFormType.value];
+  const minPrice = minPricesMap[adFormType.value];
   adFormPrice.placeholder = minPrice;
   adFormPrice.min = minPrice;
 });
 
-adFormTimein.addEventListener(`change`, () => {
-  adFormTimeout.value = adFormTimein.value;
-});
-
-adFormTimeout.addEventListener(`change`, () => {
-  adFormTimein.value = adFormTimeout.value;
+adFormTime.addEventListener(`change`, (evt) => {
+  adFormTimeout.value = evt.target.value;
+  adFormTimein.value = evt.target.value;
 });
 
 adFormRoomNumber.addEventListener(`change`, () => {
   changeCapacityOptions();
+});
+
+let openedCard;
+let popupClose;
+
+offersZone.addEventListener(`click`, (evt) => {
+  openOffer(evt);
+});
+
+
+offersZone.addEventListener(`keydown`, (evt) => {
+  if (evt.key === `Enter`) {
+    openOffer(evt);
+  }
 });
