@@ -2,6 +2,7 @@
 
 (() => {
 
+  const map = document.querySelector(`.map`);
   const cardTemplate = document.querySelector(`#card`)
   .content
   .querySelector(`.popup`);
@@ -99,7 +100,7 @@
   };
 
   const openPopup = (id) => {
-    const card = offersWithId.find((item) => {
+    const card = window.data.offersWithId.find((item) => {
       return item.id === id;
     });
     openedCard = renderOfferCard(card);

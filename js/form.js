@@ -28,6 +28,8 @@
     100: `<option value="0" selected>не для гостей</option>`,
   };
 
+  const map = document.querySelector(`.map`);
+  const mainMapPin = map.querySelector(`.map__pin--main`);
   const adForm = document.querySelector(`.ad-form`);
   const adFormTitle = adForm.querySelector(`#title`);
   const adFormAddress = adForm.querySelector(`#address`);
@@ -39,6 +41,8 @@
   const adFormRoomNumber = adForm.querySelector(`#room_number`);
   const adFormCapacity = adForm.querySelector(`#capacity`);
 
+  let isPageActivated = false;
+
   const toggleElementsState = (form, ativate) => {
     const fieldsets = form.querySelectorAll(`fieldset`);
 
@@ -48,7 +52,7 @@
   };
 
   const completeAddressInput = () => {
-    const y = (isPageActivated)
+    const y = (window.form.isPageActivated)
       ? Math.round(parseInt(mainMapPin.style.top, 10) + MAIN_MAP_PIN_HEIGHT + MAIN_MAP_PIN_NEEDLE_HEIGHT)
       : Math.round(parseInt(mainMapPin.style.top, 10) + MAIN_MAP_PIN_HEIGHT / 2);
 
@@ -108,6 +112,7 @@
   });
 
   window.form = {
+    isPageActivated,
     toggleElementsState,
     completeAddressInput,
     changeCapacityOptions,

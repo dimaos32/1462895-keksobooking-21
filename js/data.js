@@ -2,6 +2,8 @@
 
 (() => {
 
+  const MOCKS_QUANTITY = 8;
+
   const PRICE_MIN = 1;
   const PRICE_MAX = 50;
   const PRICE_STEP = 1000;
@@ -63,6 +65,8 @@
     house: `Дом`,
     bungalow: `Бунгало`,
   };
+
+  const offersZone = document.querySelector(`.map__pins`);
 
   const getQEndings = (q = 1, word) => {
     if (q % 100 < 11 || q % 100 > 14) {
@@ -133,8 +137,10 @@
     return generatedMocks;
   };
 
-  const getId = (offers) => {
-    let offersWithId = offers.slice();
+  const offers = generateMocks(MOCKS_QUANTITY);
+
+  const getId = (item) => {
+    let offersWithId = item.slice();
 
     offersWithId.forEach((offer, i) => {
       offer.id = `${i}`;
@@ -144,10 +150,11 @@
   };
 
   window.data = {
+    offersWithId: getId(offers),
     getQEndings,
     getHousingType,
     generateMocks,
     getId,
-  }
+  };
 
 })();
