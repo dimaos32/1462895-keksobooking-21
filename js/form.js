@@ -52,7 +52,7 @@
   };
 
   const completeAddressInput = () => {
-    const y = (window.form.isPageActivated)
+    const y = isPageActivated
       ? Math.round(parseInt(mainMapPin.style.top, 10) + MAIN_MAP_PIN_HEIGHT + MAIN_MAP_PIN_NEEDLE_HEIGHT)
       : Math.round(parseInt(mainMapPin.style.top, 10) + MAIN_MAP_PIN_HEIGHT / 2);
 
@@ -67,6 +67,23 @@
     const minPrice = minPricesMap[adFormType.value];
     adFormPrice.placeholder = minPrice;
     adFormPrice.min = minPrice;
+  };
+
+  const enableForm = () => {
+    isPageActivated = true;
+
+    toggleElementsState(adForm, true);
+    completeAddressInput();
+  };
+
+  const disableForm = () => {
+    isPageActivated = false;
+
+    toggleElementsState(adForm, false);
+    completeAddressInput();
+
+    changeCapacityOptions();
+    syncPrice();
   };
 
   adFormTitle.addEventListener(`input`, () => {
@@ -108,15 +125,13 @@
   });
 
   adFormRoomNumber.addEventListener(`change`, () => {
-    window.form.changeCapacityOptions();
+    changeCapacityOptions();
   });
 
   window.form = {
     isPageActivated,
-    toggleElementsState,
-    completeAddressInput,
-    changeCapacityOptions,
-    syncPrice,
+    enableForm,
+    disableForm,
   };
 
 })();

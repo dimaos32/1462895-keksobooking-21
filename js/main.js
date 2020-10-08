@@ -7,29 +7,20 @@ const mainMapPin = map.querySelector(`.map__pin--main`);
 const adForm = document.querySelector(`.ad-form`);
 
 const activatePage = () => {
-  if (!window.form.isPageActivated) {
-    window.form.isPageActivated = true;
-    window.form.toggleElementsState(adForm, true);
-    window.form.completeAddressInput();
-    map.classList.remove(`map--faded`);
-    adForm.classList.remove(`ad-form--disabled`);
+  window.form.enableForm();
 
-    window.data.offersWithId.forEach((pin) => {
-      fragmentPinList.append(window.map.renderOfferPin(pin));
-    });
+  map.classList.remove(`map--faded`);
+  adForm.classList.remove(`ad-form--disabled`);
 
-    offersZone.append(fragmentPinList);
-  }
+  window.data.offersWithId.forEach((pin) => {
+    fragmentPinList.append(window.map.renderOfferPin(pin));
+  });
+
+  offersZone.append(fragmentPinList);
 };
 
 const deactivatePage = () => {
-  window.form.isPageActivated = false;
-  window.form.completeAddressInput();
-
-  window.form.toggleElementsState(adForm, false);
-  window.form.changeCapacityOptions();
-
-  window.form.syncPrice();
+  window.form.disableForm();
 };
 
 deactivatePage();

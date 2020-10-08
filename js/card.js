@@ -125,6 +125,7 @@
     if (openedCard) {
       map.removeChild(openedCard);
       openedCard = null;
+      currentOpenedCard = null;
     }
   };
 
