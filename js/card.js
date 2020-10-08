@@ -4,10 +4,11 @@
 
   const map = document.querySelector(`.map`);
   const cardTemplate = document.querySelector(`#card`)
-  .content
-  .querySelector(`.popup`);
+    .content
+    .querySelector(`.popup`);
 
   let openedCard;
+  let currentOpenedCard;
   let popupClose;
 
   const renderOfferCard = (item) => {
@@ -15,6 +16,7 @@
       author: {
         avatar
       },
+      id,
       offer: {
         title,
         address,
@@ -31,6 +33,10 @@
     } = item;
 
     const offerPreset = cardTemplate.cloneNode(true);
+
+    if (id) {
+      offerPreset.dataset.id = id;
+    }
 
     offerPreset.querySelector(`.popup__avatar`).src = avatar;
     offerPreset.querySelector(`.popup__title`).textContent = title;
@@ -103,6 +109,7 @@
     const card = window.data.offersWithId.find((item) => {
       return item.id === id;
     });
+
     openedCard = renderOfferCard(card);
     map.append(openedCard);
 
@@ -110,6 +117,8 @@
     popupClose.addEventListener(`click`, onPopupClose);
     popupClose.addEventListener(`keydown`, onPopupEnterPress);
     document.addEventListener(`keydown`, onPopupEscPress);
+
+    currentOpenedCard = openedCard;
   };
 
   const closePopup = () => {
@@ -138,11 +147,13 @@
   };
 
   const openOffer = (evt) => {
-    const id = evt.target.closest(`.map__pin`).dataset.id;
+    if (evt.target.closest(`.map__pin`)) {
+      const id = evt.target.closest(`.map__pin`).dataset.id;
 
-    if (id) {
-      closePopup();
-      openPopup(id);
+      if ((!currentOpenedCard || currentOpenedCard.dataset.id !== id) && id) {
+        closePopup();
+        openPopup(id);
+      }
     }
   };
 
