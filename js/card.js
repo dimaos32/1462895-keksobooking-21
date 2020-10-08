@@ -73,8 +73,7 @@
 
     for (let i = 0; i < features.length; i++) {
       const feature = document.createElement(`li`);
-      feature.classList.add(`popup__feature`);
-      feature.classList.add(`popup__feature--${features[i]}`);
+      feature.classList.add(`popup__feature`, `popup__feature--${features[i]}`);
       popupFeatures.append(feature);
     }
 
@@ -106,9 +105,7 @@
   };
 
   const openPopup = (id) => {
-    const card = window.data.offersWithId.find((item) => {
-      return item.id === id;
-    });
+    const card = window.data.offersWithId.find((item) => item.id === id);
 
     openedCard = renderOfferCard(card);
     map.append(openedCard);

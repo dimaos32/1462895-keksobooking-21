@@ -137,8 +137,6 @@
     return generatedMocks;
   };
 
-  const offers = generateMocks(MOCKS_QUANTITY);
-
   const getId = (item) => {
     let offersWithId = item.slice();
 
@@ -149,8 +147,11 @@
     return offersWithId;
   };
 
+  const offers = generateMocks(MOCKS_QUANTITY);
+  const offersWithId = getId(offers);
+
   window.data = {
-    offersWithId: getId(offers),
+    offersWithId,
     getQEndings,
     getHousingType,
     generateMocks,
