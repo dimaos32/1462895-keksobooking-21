@@ -2,10 +2,6 @@
 
 (() => {
 
-  const MAIN_MAP_PIN_WIDTH = 62;
-  const MAIN_MAP_PIN_HEIGHT = 62;
-  const MAIN_MAP_PIN_NEEDLE_HEIGHT = 22;
-
   const MIN_TITLE_LENGTH = 30;
   const MAX_TITLE_LENGTH = 100;
 
@@ -28,8 +24,6 @@
     100: `<option value="0" selected>не для гостей</option>`,
   };
 
-  const map = document.querySelector(`.map`);
-  const mainMapPin = map.querySelector(`.map__pin--main`);
   const adForm = document.querySelector(`.ad-form`);
   const adFormTitle = adForm.querySelector(`#title`);
   const adFormAddress = adForm.querySelector(`#address`);
@@ -43,20 +37,18 @@
 
   let isPageActivated = false;
 
-  const toggleElementsState = (form, ativate) => {
+  const toggleElementsState = (form, ON) => {
     const fieldsets = form.querySelectorAll(`fieldset`);
 
     fieldsets.forEach((fieldset) => {
-      fieldset.disabled = !ativate;
+      fieldset.disabled = !ON;
     });
   };
 
   const completeAddressInput = () => {
-    const y = (window.form.isPageActivated)
-      ? Math.round(parseInt(mainMapPin.style.top, 10) + MAIN_MAP_PIN_HEIGHT + MAIN_MAP_PIN_NEEDLE_HEIGHT)
-      : Math.round(parseInt(mainMapPin.style.top, 10) + MAIN_MAP_PIN_HEIGHT / 2);
+    const coords = window.pin.getMainMapPinCoords();
 
-    adFormAddress.value = `${Math.round(parseInt(mainMapPin.style.left, 10) + MAIN_MAP_PIN_WIDTH / 2)}, ${y}`;
+    adFormAddress.value = `${coords.x}, ${coords.y}`;
   };
 
   const changeCapacityOptions = () => {
@@ -67,6 +59,25 @@
     const minPrice = minPricesMap[adFormType.value];
     adFormPrice.placeholder = minPrice;
     adFormPrice.min = minPrice;
+  };
+
+  const enableForm = () => {
+    window.form.isPageActivated = true;
+
+    toggleElementsState(adForm, true);
+    completeAddressInput();
+
+    adForm.classList.remove(`ad-form--disabled`);
+  };
+
+  const disableForm = () => {
+    window.form.isPageActivated = false;
+
+    toggleElementsState(adForm, false);
+    completeAddressInput();
+
+    changeCapacityOptions();
+    syncPrice();
   };
 
   adFormTitle.addEventListener(`input`, () => {
@@ -108,15 +119,14 @@
   });
 
   adFormRoomNumber.addEventListener(`change`, () => {
-    window.form.changeCapacityOptions();
+    changeCapacityOptions();
   });
 
   window.form = {
     isPageActivated,
-    toggleElementsState,
     completeAddressInput,
-    changeCapacityOptions,
-    syncPrice,
+    enableForm,
+    disableForm,
   };
 
 })();
