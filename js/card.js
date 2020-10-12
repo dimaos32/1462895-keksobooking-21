@@ -77,18 +77,16 @@
       popupFeatures.append(feature);
     }
 
-    for (let i = 0; i < photos.length; i++) {
-      offerPreset.querySelectorAll(`.popup__photo`)[i].src = photos[i];
+    const popupPhotos = offerPreset.querySelector(`.popup__photos`);
+    const templatePopupPhoto = popupPhotos.querySelector(`.popup__photo`);
 
-      if (i < photos.length - 1) {
-        offerPreset.querySelector(`.popup__photos`)
-          .append(offerPreset.querySelector(`.popup__photo`).cloneNode());
-      }
-    }
+    photos.forEach((photo) => {
+      const popupPhoto = templatePopupPhoto.cloneNode(true);
+      popupPhoto.src = photo;
+      popupPhotos.append(popupPhoto);
+    });
 
-    if (!photos) {
-      offerPreset.querySelector(`.popup__photo`).remove();
-    }
+    templatePopupPhoto.remove();
 
     for (let i = 0; i < offerPreset.children.length; i++) {
       if (
