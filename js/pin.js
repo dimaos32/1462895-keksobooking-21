@@ -35,20 +35,25 @@
 
     const coords = getMainMapPinCoords();
 
+    const mainPinLeftMin = LOCATION_X_MIN - MAIN_MAP_PIN_WIDTH / 2;
+    const mainPinLeftMax = LOCATION_X_MAX - MAIN_MAP_PIN_WIDTH / 2;
+    const mainPinTopMin = LOCATION_Y_MIN - MAIN_MAP_PIN_HEIGHT - MAIN_MAP_PIN_NEEDLE_HEIGHT;
+    const mainPinTopMax = LOCATION_Y_MAX - MAIN_MAP_PIN_HEIGHT - MAIN_MAP_PIN_NEEDLE_HEIGHT;
+
     if (parseInt(coords.x, 10) < LOCATION_X_MIN) {
-      mainMapPin.style.left = `${LOCATION_X_MIN - MAIN_MAP_PIN_WIDTH / 2}px`;
+      mainMapPin.style.left = `${mainPinLeftMin}px`;
     }
 
     if (parseInt(coords.x, 10) > LOCATION_X_MAX) {
-      mainMapPin.style.left = `${LOCATION_X_MAX - MAIN_MAP_PIN_WIDTH / 2}px`;
+      mainMapPin.style.left = `${mainPinLeftMax}px`;
     }
 
     if (parseInt(coords.y, 10) < LOCATION_Y_MIN) {
-      mainMapPin.style.top = `${LOCATION_Y_MIN - MAIN_MAP_PIN_HEIGHT - MAIN_MAP_PIN_NEEDLE_HEIGHT}px`;
+      mainMapPin.style.top = `${mainPinTopMin}px`;
     }
 
     if (parseInt(coords.y, 10) > LOCATION_Y_MAX) {
-      mainMapPin.style.top = `${LOCATION_Y_MAX - MAIN_MAP_PIN_HEIGHT - MAIN_MAP_PIN_NEEDLE_HEIGHT}px`;
+      mainMapPin.style.top = `${mainPinTopMax}px`;
     }
   };
 
@@ -62,6 +67,57 @@
 
     return offerPreset;
   };
+
+  mainMapPin.addEventListener(`mousedown`, (evt) => {
+    evt.preventDefault();
+
+    const startCoords = {
+      x: evt.clientX,
+      y: evt.clientY,
+    };
+
+    const onMouseMove = (moveEvt) => {
+      moveEvt.preventDefault();
+
+      const shift = {
+        x: moveEvt.clientX - startCoords.x,
+        y: moveEvt.clientY - startCoords.y,
+      };
+
+      startCoords.x = moveEvt.clientX;
+      startCoords.y = moveEvt.clientY;
+
+      mainMapPin.style.left = `${mainMapPin.offsetLeft + shift.x}px`;
+      mainMapPin.style.top = `${mainMapPin.offsetTop + shift.y}px`;
+
+      window.pin.controlsMainMapPinCoords();
+      window.form.completeAddressInput();
+    };
+
+    const onMouseUp = (upEvt) => {
+      upEvt.preventDefault();
+
+      window.form.completeAddressInput();
+
+      document.removeEventListener(`mousemove`, onMouseMove);
+      document.removeEventListener(`mouseup`, onMouseUp);
+    };
+
+    document.addEventListener(`mousemove`, onMouseMove);
+    document.addEventListener(`mouseup`, onMouseUp);
+
+    if (!window.form.isPageActivated) {
+      window.main.activatePage();
+    }
+  });
+
+  mainMapPin.addEventListener(`keydown`, (evt) => {
+    evt.preventDefault();
+
+    if (evt.key === `Enter` && !window.form.isPageActivated) {
+      window.main.activatePage();
+    }
+  });
 
   window.pin = {
     getMainMapPinCoords,
