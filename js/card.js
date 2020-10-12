@@ -94,9 +94,9 @@
       popupPhotos.append(popupPhoto);
     });
 
-    Array.from(offerPreset.children).forEach((item) => {
-      if (item.tagName !== `IMG` && !item.innerHTML) {
-        item.remove();
+    Array.from(offerPreset.children).forEach((child) => {
+      if (child.tagName !== `IMG` && !child.innerHTML) {
+        child.remove();
       }
     });
 
