@@ -43,6 +43,12 @@
     offerPreset.querySelector(`.popup__text--address`).textContent = address;
     offerPreset.querySelector(`.popup__type`).textContent = window.data.getHousingType(type);
 
+    if (avatar) {
+      offerPreset.querySelector(`.popup__avatar`).src = avatar;
+    } else {
+      offerPreset.querySelector(`.popup__avatar`).remove();
+    }
+
     if (price) {
       offerPreset.querySelector(`.popup__text--price`).innerHTML = `${price}&#x20bd;<span>/ночь</span>`;
     } else {
@@ -80,24 +86,19 @@
     const popupPhotos = offerPreset.querySelector(`.popup__photos`);
     const templatePopupPhoto = popupPhotos.querySelector(`.popup__photo`);
 
+    popupPhotos.innerHTML = ``;
+
     photos.forEach((photo) => {
       const popupPhoto = templatePopupPhoto.cloneNode(true);
       popupPhoto.src = photo;
       popupPhotos.append(popupPhoto);
     });
 
-    templatePopupPhoto.remove();
-
-    for (let i = 0; i < offerPreset.children.length; i++) {
-      if (
-        (!offerPreset.children[i].textContent && i > 1 && i !== 8 && i !== 10) ||
-        (!offerPreset.children[i].src && i === 0) ||
-        (!offerPreset.children[i].querySelectorAll(`li`).length && i === 8) ||
-        (!offerPreset.children[i].querySelectorAll(`img`).length && i === 10)
-      ) {
-        offerPreset.children[i].classList.add(`hidden`);
+    Array.from(offerPreset.children).forEach((item) => {
+      if (item.tagName !== `IMG` && !item.innerHTML) {
+        item.remove();
       }
-    }
+    });
 
     return offerPreset;
   };
