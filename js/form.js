@@ -37,11 +37,11 @@
 
   let isPageActivated = false;
 
-  const toggleElementsState = (form, ON) => {
+  const toggleElementsState = (form, isOn) => {
     const fieldsets = form.querySelectorAll(`fieldset`);
 
     fieldsets.forEach((fieldset) => {
-      fieldset.disabled = !ON;
+      fieldset.disabled = !isOn;
     });
   };
 
