@@ -14,8 +14,6 @@
     bungalow: `Бунгало`,
   };
 
-  let offersWithId;
-
   const getQEndings = (q = 1, word) => {
     if (q % 100 < 11 || q % 100 > 14) {
       if (q % 10 === 1) {
@@ -33,14 +31,16 @@
   };
 
   const addId = (item) => {
-    let offers = item.slice();
+    let offersWithId = item.slice();
 
-    offers.forEach((offer, i) => {
+    offersWithId.forEach((offer, i) => {
       offer.id = `${i}`;
     });
 
     return offersWithId;
   };
+
+  let offersWithId;
 
   window.data = {
     offersWithId,

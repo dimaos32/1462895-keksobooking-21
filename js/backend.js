@@ -48,7 +48,7 @@
   const onError = (message) => {
     const node = document.createElement(`div`);
 
-    node.classList.add(`error`);
+    node.classList.add(`on-error-message`);
 
     node.textContent = message;
     document.body.insertAdjacentElement(`afterbegin`, node);
