@@ -2,7 +2,7 @@
 
 (() => {
 
-  const API_URL =`https://21.javascript.pages.academy/keksobooking`;
+  const API_URL = `https://21.javascript.pages.academy/keksobooking`;
 
   const StatusCode = {
     OK: 200
