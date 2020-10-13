@@ -8,7 +8,6 @@
     .querySelector(`.popup`);
 
   let openedCard;
-  let currentOpenedCard;
   let popupClose;
 
   const addOfferFeatures = (item, features) => {
@@ -111,15 +110,12 @@
     popupClose.addEventListener(`click`, onPopupClose);
     popupClose.addEventListener(`keydown`, onPopupEnterPress);
     document.addEventListener(`keydown`, onPopupEscPress);
-
-    currentOpenedCard = openedCard;
   };
 
   const closePopup = () => {
     if (openedCard) {
       map.removeChild(openedCard);
       openedCard = null;
-      currentOpenedCard = null;
     }
   };
 
@@ -143,9 +139,16 @@
 
   const openOffer = (evt) => {
     if (evt.target.closest(`.map__pin`)) {
-      const id = evt.target.closest(`.map__pin`).dataset.id;
+      const targetPin = evt.target.closest(`.map__pin`);
+      const activePin = map.querySelector(`.map__pin--active`);
+      const id = targetPin.dataset.id;
 
-      if ((!currentOpenedCard || currentOpenedCard.dataset.id !== id) && id) {
+      if ((!activePin || activePin.dataset.id !== id) && id) {
+        if (activePin) {
+          activePin.classList.remove(`map__pin--active`);
+        }
+
+        targetPin.classList.add(`map__pin--active`);
         closePopup();
         openPopup(id);
       }
