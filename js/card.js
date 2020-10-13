@@ -120,12 +120,14 @@
   };
 
   const onPopupClose = () => {
+    map.querySelector(`.map__pin--active`).classList.remove(`map__pin--active`);
     closePopup();
   };
 
   const onPopupEscPress = (evt) => {
     if (evt.key === `Escape`) {
       evt.preventDefault();
+      map.querySelector(`.map__pin--active`).classList.remove(`map__pin--active`);
       closePopup();
     }
   };
