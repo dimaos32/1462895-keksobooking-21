@@ -76,6 +76,8 @@
     toggleElementsState(adForm, false);
     completeAddressInput();
 
+    adForm.classList.add(`ad-form--disabled`);
+
     changeCapacityOptions();
     syncPrice();
   };

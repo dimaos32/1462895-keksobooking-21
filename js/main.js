@@ -2,28 +2,21 @@
 
 const offersZone = document.querySelector(`.map__pins`);
 const map = document.querySelector(`.map`);
-const fragmentPinList = document.createDocumentFragment();
 
 const onLoadSuccess = (data) => {
   window.util.offersWithId = window.util.addId(data);
-
-  window.util.offersWithId.forEach((pin) => {
-    fragmentPinList.append(window.pin.renderOfferPin(pin));
-  });
-
-  offersZone.append(fragmentPinList);
+  window.pin.renderOfferPins(window.util.offersWithId);
 };
 
 const activatePage = () => {
   window.form.enableForm();
-
   map.classList.remove(`map--faded`);
-
   window.backend.load(onLoadSuccess, window.backend.onError);
 };
 
 const deactivatePage = () => {
   window.form.disableForm();
+  map.classList.add(`map--faded`);
 };
 
 deactivatePage();

@@ -52,7 +52,7 @@
   };
 
   const addId = (array) => {
-    let dataWithId = array.slice();
+    const dataWithId = array.slice();
 
     dataWithId.forEach((item, i) => {
       item.id = `${i}`;

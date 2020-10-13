@@ -18,7 +18,7 @@
       feature.classList.add(`popup__feature`, `popup__feature--${features[i]}`);
       item.append(feature);
     }
-  }
+  };
 
   const addOfferPhotos = (item, photos) => {
     const templatePopupPhoto = item.querySelector(`.popup__photo`);
