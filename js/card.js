@@ -42,36 +42,23 @@
     offerPreset.querySelector(`.popup__title`).textContent = title;
     offerPreset.querySelector(`.popup__text--address`).textContent = address;
     offerPreset.querySelector(`.popup__type`).textContent = window.util.getHousingType(type);
+    offerPreset.querySelector(`.popup__description`).textContent = description;
 
-    if (avatar) {
-      offerPreset.querySelector(`.popup__avatar`).src = avatar;
-    } else {
-      offerPreset.querySelector(`.popup__avatar`).remove();
-    }
+    offerPreset.querySelector(`.popup__avatar`).src = avatar
+      ? avatar
+      : offerPreset.querySelector(`.popup__avatar`).remove();
 
-    if (price) {
-      offerPreset.querySelector(`.popup__text--price`).innerHTML = `${price}&#x20bd;<span>/ночь</span>`;
-    } else {
-      offerPreset.querySelector(`.popup__text--price`).textContent = ``;
-    }
+    offerPreset.querySelector(`.popup__text--price`).innerHTML = price
+      ? `${price}&#x20bd;<span>/ночь</span>`
+      : ``;
 
-    if (rooms && guests) {
-      offerPreset.querySelector(`.popup__text--capacity`).textContent = `${window.util.getQEndings(rooms, `room`)} для ${window.util.getQEndings(guests, `guest`)}`;
-    } else {
-      offerPreset.querySelector(`.popup__text--capacity`).textContent = ``;
-    }
+    offerPreset.querySelector(`.popup__text--capacity`).textContent = rooms && guests
+      ? `${window.util.getQEndings(rooms, `room`)} для ${window.util.getQEndings(guests, `guest`)}`
+      : ``;
 
-    if (checkin && checkout) {
-      offerPreset.querySelector(`.popup__text--time`).textContent = `Заезд после ${checkin}, выезд до ${checkout}`;
-    } else {
-      offerPreset.querySelector(`.popup__text--time`).textContent = ``;
-    }
-
-    if (type && rooms) {
-      offerPreset.querySelector(`.popup__description`).textContent = description;
-    } else {
-      offerPreset.querySelector(`.popup__description`).textContent = ``;
-    }
+    offerPreset.querySelector(`.popup__text--time`).textContent = checkin && checkout
+      ? `Заезд после ${checkin}, выезд до ${checkout}`
+      : ``;
 
     const popupFeatures = offerPreset.querySelector(`.popup__features`);
 

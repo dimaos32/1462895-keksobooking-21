@@ -51,14 +51,14 @@
     return typesMap[type];
   };
 
-  const addId = (item) => {
-    let offersWithId = item.slice();
+  const addId = (array) => {
+    let dataWithId = array.slice();
 
-    offersWithId.forEach((offer, i) => {
-      offer.id = `${i}`;
+    dataWithId.forEach((item, i) => {
+      item.id = `${i}`;
     });
 
-    return offersWithId;
+    return dataWithId;
   };
 
   window.util = {
