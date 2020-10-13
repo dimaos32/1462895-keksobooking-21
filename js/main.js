@@ -5,9 +5,9 @@ const map = document.querySelector(`.map`);
 const fragmentPinList = document.createDocumentFragment();
 
 const onLoadSuccess = (data) => {
-  window.data.offersWithId = window.data.addId(data);
+  window.util.offersWithId = window.util.addId(data);
 
-  window.data.offersWithId.forEach((pin) => {
+  window.util.offersWithId.forEach((pin) => {
     fragmentPinList.append(window.pin.renderOfferPin(pin));
   });
 

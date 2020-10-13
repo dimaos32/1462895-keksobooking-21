@@ -41,7 +41,7 @@
     offerPreset.querySelector(`.popup__avatar`).src = avatar;
     offerPreset.querySelector(`.popup__title`).textContent = title;
     offerPreset.querySelector(`.popup__text--address`).textContent = address;
-    offerPreset.querySelector(`.popup__type`).textContent = window.data.getHousingType(type);
+    offerPreset.querySelector(`.popup__type`).textContent = window.util.getHousingType(type);
 
     if (avatar) {
       offerPreset.querySelector(`.popup__avatar`).src = avatar;
@@ -56,7 +56,7 @@
     }
 
     if (rooms && guests) {
-      offerPreset.querySelector(`.popup__text--capacity`).textContent = `${window.data.getQEndings(rooms, `room`)} для ${window.data.getQEndings(guests, `guest`)}`;
+      offerPreset.querySelector(`.popup__text--capacity`).textContent = `${window.util.getQEndings(rooms, `room`)} для ${window.util.getQEndings(guests, `guest`)}`;
     } else {
       offerPreset.querySelector(`.popup__text--capacity`).textContent = ``;
     }
@@ -104,7 +104,7 @@
   };
 
   const openPopup = (id) => {
-    const card = window.data.offersWithId.find((item) => item.id === id);
+    const card = window.util.offersWithId.find((item) => item.id === id);
 
     openedCard = renderOfferCard(card);
     map.append(openedCard);
