@@ -11,6 +11,36 @@
   let currentOpenedCard;
   let popupClose;
 
+  const addOfferFeatures = (item, features) => {
+    item.innerHTML = ``;
+
+    for (let i = 0; i < features.length; i++) {
+      const feature = document.createElement(`li`);
+      feature.classList.add(`popup__feature`, `popup__feature--${features[i]}`);
+      item.append(feature);
+    }
+  }
+
+  const addOfferPhotos = (item, photos) => {
+    const templatePopupPhoto = item.querySelector(`.popup__photo`);
+
+    item.innerHTML = ``;
+
+    photos.forEach((photo) => {
+      const popupPhoto = templatePopupPhoto.cloneNode(true);
+      popupPhoto.src = photo;
+      item.append(popupPhoto);
+    });
+  };
+
+  const removeEmptyNodes = (item) => {
+    Array.from(item.children).forEach((child) => {
+      if (child.tagName !== `IMG` && !child.innerHTML) {
+        child.remove();
+      }
+    });
+  };
+
   const renderOfferCard = (item) => {
     const {
       author: {
@@ -33,59 +63,40 @@
     } = item;
 
     const offerPreset = cardTemplate.cloneNode(true);
+    const popupAvapar = offerPreset.querySelector(`.popup__avatar`);
+    const popupTitle = offerPreset.querySelector(`.popup__title`);
+    const popupAddress = offerPreset.querySelector(`.popup__text--address`);
+    const popupPrice = offerPreset.querySelector(`.popup__text--price`);
+    const popupType = offerPreset.querySelector(`.popup__type`);
+    const popupCapacity = offerPreset.querySelector(`.popup__text--capacity`);
+    const popupTime = offerPreset.querySelector(`.popup__text--time`);
+    const popupFeatures = offerPreset.querySelector(`.popup__features`);
+    const popupDescription = offerPreset.querySelector(`.popup__description`);
+    const popupPhotos = offerPreset.querySelector(`.popup__photos`);
 
     if (id) {
       offerPreset.dataset.id = id;
     }
 
-    offerPreset.querySelector(`.popup__avatar`).src = avatar;
-    offerPreset.querySelector(`.popup__title`).textContent = title;
-    offerPreset.querySelector(`.popup__text--address`).textContent = address;
-    offerPreset.querySelector(`.popup__type`).textContent = window.util.getHousingType(type);
-    offerPreset.querySelector(`.popup__description`).textContent = description;
+    popupAvapar.src = avatar ? avatar : popupAvapar.remove();
+    popupTitle.textContent = title;
+    popupAddress.textContent = address;
+    popupPrice.innerHTML = price ? `${price}&#x20bd;<span>/ночь</span>` : ``;
+    popupType.textContent = window.util.getHousingType(type);
 
-    offerPreset.querySelector(`.popup__avatar`).src = avatar
-      ? avatar
-      : offerPreset.querySelector(`.popup__avatar`).remove();
-
-    offerPreset.querySelector(`.popup__text--price`).innerHTML = price
-      ? `${price}&#x20bd;<span>/ночь</span>`
-      : ``;
-
-    offerPreset.querySelector(`.popup__text--capacity`).textContent = rooms && guests
+    popupCapacity.textContent = rooms && guests
       ? `${window.util.getQEndings(rooms, `room`)} для ${window.util.getQEndings(guests, `guest`)}`
       : ``;
 
-    offerPreset.querySelector(`.popup__text--time`).textContent = checkin && checkout
+    popupTime.textContent = checkin && checkout
       ? `Заезд после ${checkin}, выезд до ${checkout}`
       : ``;
 
-    const popupFeatures = offerPreset.querySelector(`.popup__features`);
+    addOfferFeatures(popupFeatures, features);
+    popupDescription.textContent = description;
+    addOfferPhotos(popupPhotos, photos);
 
-    popupFeatures.innerHTML = ``;
-
-    for (let i = 0; i < features.length; i++) {
-      const feature = document.createElement(`li`);
-      feature.classList.add(`popup__feature`, `popup__feature--${features[i]}`);
-      popupFeatures.append(feature);
-    }
-
-    const popupPhotos = offerPreset.querySelector(`.popup__photos`);
-    const templatePopupPhoto = popupPhotos.querySelector(`.popup__photo`);
-
-    popupPhotos.innerHTML = ``;
-
-    photos.forEach((photo) => {
-      const popupPhoto = templatePopupPhoto.cloneNode(true);
-      popupPhoto.src = photo;
-      popupPhotos.append(popupPhoto);
-    });
-
-    Array.from(offerPreset.children).forEach((child) => {
-      if (child.tagName !== `IMG` && !child.innerHTML) {
-        child.remove();
-      }
-    });
+    removeEmptyNodes(offerPreset);
 
     return offerPreset;
   };
