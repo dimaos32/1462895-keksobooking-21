@@ -130,7 +130,7 @@
 
     errorMessage.addEventListener(`click`, onClick);
     document.addEventListener(`keydown`, onEscPress);
-  }
+  };
 
   adFormTitle.addEventListener(`input`, () => {
     const valueLength = adFormTitle.value.length;
