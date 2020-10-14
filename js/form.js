@@ -82,7 +82,28 @@
     syncPrice();
   };
 
+  const onSuccessMessageClick = () => {
+    document.querySelector(`main .success`).remove();
+  };
+
+  const onSuccessPopupEscPress = (evt) => {
+    if (evt.key === `Escape`) {
+      document.querySelector(`main .success`).remove();
+    }
+  };
+
   const onSendSuccess = () => {
+    const page = document.querySelector(`main`);
+    const successMessage = document.querySelector(`#success`)
+      .content
+      .querySelector(`.success`)
+      .cloneNode(true);
+
+    page.append(successMessage);
+
+    successMessage.addEventListener(`click`, onSuccessMessageClick);
+    document.addEventListener(`keydown`, onSuccessPopupEscPress);
+
     adForm.reset();
     completeAddressInput();
     syncPrice();
