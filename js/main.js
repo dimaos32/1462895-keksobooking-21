@@ -1,7 +1,7 @@
 'use strict';
 
-const offersZone = document.querySelector(`.map__pins`);
 const map = document.querySelector(`.map`);
+const offersZone = map.querySelector(`.map__pins`);
 
 const onLoadSuccess = (data) => {
   window.util.offersWithId = window.util.addId(data);
@@ -25,6 +25,7 @@ const activatePage = () => {
 
 const deactivatePage = () => {
   window.form.disableForm();
+  window.pin.deleteOfferPins();
   map.classList.add(`map--faded`);
 };
 

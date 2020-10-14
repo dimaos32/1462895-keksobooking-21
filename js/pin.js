@@ -78,6 +78,16 @@
     offersZone.append(fragment);
   };
 
+  const deleteOfferPins = () => {
+    const pins = offersZone.querySelectorAll(`.map__pin`);
+
+    pins.forEach((pin) => {
+      if (!pin.classList.contains(`map__pin--main`)) {
+        pin.remove();
+      }
+    });
+  };
+
   mainMapPin.addEventListener(`mousedown`, (evt) => {
     evt.preventDefault();
 
@@ -134,6 +144,7 @@
     controlsMainMapPinCoords,
     renderOfferPin,
     renderOfferPins,
+    deleteOfferPins,
   };
 
 })();
