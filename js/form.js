@@ -25,6 +25,7 @@
   };
 
   const adForm = document.querySelector(`.ad-form`);
+  const adFormReset = document.querySelector(`.ad-form__reset`);
   const adFormTitle = adForm.querySelector(`#title`);
   const adFormAddress = adForm.querySelector(`#address`);
   const adFormPrice = adForm.querySelector(`#price`);
@@ -174,8 +175,15 @@
   });
 
   adForm.addEventListener(`submit`, (evt) => {
-    window.backend.send(new FormData(adForm), onSendSuccess, onSendError);
     evt.preventDefault();
+    window.backend.send(new FormData(adForm), onSendSuccess, onSendError);
+  });
+
+  adFormReset.addEventListener(`click`, (evt) => {
+    evt.preventDefault();
+    adForm.reset();
+    completeAddressInput();
+    syncPrice();
   });
 
   window.form = {
