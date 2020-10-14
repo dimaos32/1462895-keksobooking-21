@@ -25,6 +25,7 @@
   };
 
   const adForm = document.querySelector(`.ad-form`);
+  const adFormReset = document.querySelector(`.ad-form__reset`);
   const adFormTitle = adForm.querySelector(`#title`);
   const adFormAddress = adForm.querySelector(`#address`);
   const adFormPrice = adForm.querySelector(`#price`);
@@ -76,8 +77,59 @@
     toggleElementsState(adForm, false);
     completeAddressInput();
 
+    adForm.classList.add(`ad-form--disabled`);
+
     changeCapacityOptions();
     syncPrice();
+  };
+
+  const onSendSuccess = () => {
+    const page = document.querySelector(`main`);
+    const successMessage = document.querySelector(`#success`)
+      .content
+      .querySelector(`.success`)
+      .cloneNode(true);
+
+    const onClick = () => {
+      successMessage.remove();
+    };
+
+    const onEscPress = (evt) => {
+      if (evt.key === `Escape`) {
+        successMessage.remove();
+      }
+    };
+
+    page.append(successMessage);
+
+    successMessage.addEventListener(`click`, onClick);
+    document.addEventListener(`keydown`, onEscPress);
+
+    adForm.reset();
+    window.main.deactivatePage();
+  };
+
+  const onSendError = () => {
+    const page = document.querySelector(`main`);
+    const errorMessage = document.querySelector(`#error`)
+    .content
+    .querySelector(`.error`)
+    .cloneNode(true);
+
+    const onClick = () => {
+      errorMessage.remove();
+    };
+
+    const onEscPress = (evt) => {
+      if (evt.key === `Escape`) {
+        errorMessage.remove();
+      }
+    };
+
+    page.append(errorMessage);
+
+    errorMessage.addEventListener(`click`, onClick);
+    document.addEventListener(`keydown`, onEscPress);
   };
 
   adFormTitle.addEventListener(`input`, () => {
@@ -120,6 +172,18 @@
 
   adFormRoomNumber.addEventListener(`change`, () => {
     changeCapacityOptions();
+  });
+
+  adForm.addEventListener(`submit`, (evt) => {
+    evt.preventDefault();
+    window.backend.send(new FormData(adForm), onSendSuccess, onSendError);
+  });
+
+  adFormReset.addEventListener(`click`, (evt) => {
+    evt.preventDefault();
+    adForm.reset();
+    completeAddressInput();
+    syncPrice();
   });
 
   window.form = {

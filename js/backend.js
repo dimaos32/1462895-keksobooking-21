@@ -45,19 +45,9 @@
     makeRequest(`POST`, API_URL, onSuccess, onError, data);
   };
 
-  const onError = (message) => {
-    const node = document.createElement(`div`);
-
-    node.classList.add(`on-error-message`);
-
-    node.textContent = message;
-    document.body.insertAdjacentElement(`afterbegin`, node);
-  };
-
   window.backend = {
     load,
     send,
-    onError,
   };
 
 })();

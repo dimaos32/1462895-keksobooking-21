@@ -14,7 +14,8 @@
   const LOCATION_Y_MIN = 130;
   const LOCATION_Y_MAX = 630;
 
-  const mainMapPin = document.querySelector(`.map__pin--main`);
+  const offersZone = document.querySelector(`.map__pins`);
+  const mainMapPin = offersZone.querySelector(`.map__pin--main`);
   const pinTemplate = document.querySelector(`#pin`)
     .content
     .querySelector(`button`);
@@ -32,7 +33,6 @@
   };
 
   const controlsMainMapPinCoords = () => {
-
     const coords = getMainMapPinCoords();
 
     const mainPinLeftMin = LOCATION_X_MIN - MAIN_MAP_PIN_WIDTH / 2;
@@ -66,6 +66,26 @@
     offerPreset.querySelector(`img`).alt = `${offer.offer.title}`;
 
     return offerPreset;
+  };
+
+  const renderOfferPins = (data) => {
+    const fragment = document.createDocumentFragment();
+
+    data.forEach((pin) => {
+      fragment.append(window.pin.renderOfferPin(pin));
+    });
+
+    offersZone.append(fragment);
+  };
+
+  const deleteOfferPins = () => {
+    const pins = offersZone.querySelectorAll(`.map__pin`);
+
+    pins.forEach((pin) => {
+      if (!pin.classList.contains(`map__pin--main`)) {
+        pin.remove();
+      }
+    });
   };
 
   mainMapPin.addEventListener(`mousedown`, (evt) => {
@@ -123,6 +143,8 @@
     getMainMapPinCoords,
     controlsMainMapPinCoords,
     renderOfferPin,
+    renderOfferPins,
+    deleteOfferPins,
   };
 
 })();

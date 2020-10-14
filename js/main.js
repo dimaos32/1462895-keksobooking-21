@@ -1,29 +1,32 @@
 'use strict';
 
-const offersZone = document.querySelector(`.map__pins`);
 const map = document.querySelector(`.map`);
-const fragmentPinList = document.createDocumentFragment();
+const offersZone = map.querySelector(`.map__pins`);
 
 const onLoadSuccess = (data) => {
-  window.data.offersWithId = window.data.addId(data);
+  window.util.offersWithId = window.util.addId(data);
+  window.pin.renderOfferPins(window.util.offersWithId);
+};
 
-  window.data.offersWithId.forEach((pin) => {
-    fragmentPinList.append(window.pin.renderOfferPin(pin));
-  });
+const onLoadError = (message) => {
+  const node = document.createElement(`div`);
 
-  offersZone.append(fragmentPinList);
+  node.classList.add(`on-error-message`);
+
+  node.textContent = message;
+  document.body.insertAdjacentElement(`afterbegin`, node);
 };
 
 const activatePage = () => {
   window.form.enableForm();
-
   map.classList.remove(`map--faded`);
-
-  window.backend.load(onLoadSuccess, window.backend.onError);
+  window.backend.load(onLoadSuccess, onLoadError);
 };
 
 const deactivatePage = () => {
   window.form.disableForm();
+  window.pin.deleteOfferPins();
+  map.classList.add(`map--faded`);
 };
 
 deactivatePage();
