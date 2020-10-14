@@ -82,16 +82,6 @@
     syncPrice();
   };
 
-  const onSuccessMessageClick = () => {
-    document.querySelector(`main .success`).remove();
-  };
-
-  const onSuccessPopupEscPress = (evt) => {
-    if (evt.key === `Escape`) {
-      document.querySelector(`main .success`).remove();
-    }
-  };
-
   const onSendSuccess = () => {
     const page = document.querySelector(`main`);
     const successMessage = document.querySelector(`#success`)
@@ -99,15 +89,47 @@
       .querySelector(`.success`)
       .cloneNode(true);
 
+    const onClick = () => {
+      successMessage.remove();
+    };
+
+    const onEscPress = (evt) => {
+      if (evt.key === `Escape`) {
+        successMessage.remove();
+      }
+    };
+
     page.append(successMessage);
 
-    successMessage.addEventListener(`click`, onSuccessMessageClick);
-    document.addEventListener(`keydown`, onSuccessPopupEscPress);
+    successMessage.addEventListener(`click`, onClick);
+    document.addEventListener(`keydown`, onEscPress);
 
     adForm.reset();
-    completeAddressInput();
-    syncPrice();
+    window.main.deactivatePage();
   };
+
+  const onSendError = () => {
+    const page = document.querySelector(`main`);
+    const errorMessage = document.querySelector(`#error`)
+    .content
+    .querySelector(`.error`)
+    .cloneNode(true);
+
+    const onClick = () => {
+      errorMessage.remove();
+    };
+
+    const onEscPress = (evt) => {
+      if (evt.key === `Escape`) {
+        errorMessage.remove();
+      }
+    };
+
+    page.append(errorMessage);
+
+    errorMessage.addEventListener(`click`, onClick);
+    document.addEventListener(`keydown`, onEscPress);
+  }
 
   adFormTitle.addEventListener(`input`, () => {
     const valueLength = adFormTitle.value.length;
@@ -152,7 +174,7 @@
   });
 
   adForm.addEventListener(`submit`, (evt) => {
-    window.backend.send(new FormData(adForm), onSendSuccess, window.backend.onError);
+    window.backend.send(new FormData(adForm), onSendSuccess, onSendError);
     evt.preventDefault();
   });
 

@@ -8,10 +8,19 @@ const onLoadSuccess = (data) => {
   window.pin.renderOfferPins(window.util.offersWithId);
 };
 
+const onLoadError = (message) => {
+  const node = document.createElement(`div`);
+
+  node.classList.add(`on-error-message`);
+
+  node.textContent = message;
+  document.body.insertAdjacentElement(`afterbegin`, node);
+};
+
 const activatePage = () => {
   window.form.enableForm();
   map.classList.remove(`map--faded`);
-  window.backend.load(onLoadSuccess, window.backend.onError);
+  window.backend.load(onLoadSuccess, onLoadError);
 };
 
 const deactivatePage = () => {
