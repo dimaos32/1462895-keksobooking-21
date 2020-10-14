@@ -82,6 +82,12 @@
     syncPrice();
   };
 
+  const onSendSuccess = () => {
+    adForm.reset();
+    completeAddressInput();
+    syncPrice();
+  };
+
   adFormTitle.addEventListener(`input`, () => {
     const valueLength = adFormTitle.value.length;
 
@@ -122,6 +128,11 @@
 
   adFormRoomNumber.addEventListener(`change`, () => {
     changeCapacityOptions();
+  });
+
+  adForm.addEventListener(`submit`, (evt) => {
+    window.backend.send(new FormData(adForm), onSendSuccess, window.backend.onError);
+    evt.preventDefault();
   });
 
   window.form = {
