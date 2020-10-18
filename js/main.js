@@ -5,7 +5,7 @@ const offersZone = map.querySelector(`.map__pins`);
 
 const onLoadSuccess = (data) => {
   window.util.offersWithId = window.util.addId(data);
-  window.pin.updateOfferPins();
+  window.pin.updateOfferPins(window.util.offersWithId);
 };
 
 const onLoadError = (message) => {

@@ -90,10 +90,10 @@
     });
   };
 
-  const updateOfferPins = () => {
+  const updateOfferPins = (data) => {
     deleteOfferPins();
     window.card.closePopup();
-    renderOfferPins(window.util.offersWithId);
+    renderOfferPins(data);
   };
 
   mainMapPin.addEventListener(`mousedown`, (evt) => {
