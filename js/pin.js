@@ -74,7 +74,7 @@
     data = window.util.getRandomArrayElements(data, data.length);
 
     for (let i = 0; i < data.length && i < 5; i++) {
-      fragment.append(window.pin.renderOfferPin(data[i]));
+      fragment.append(renderOfferPin(data[i]));
     }
 
     offersZone.append(fragment);
@@ -88,6 +88,12 @@
         pin.remove();
       }
     });
+  };
+
+  const updateOfferPins = () => {
+    deleteOfferPins();
+    window.card.closePopup();
+    renderOfferPins(window.util.offersWithId);
   };
 
   mainMapPin.addEventListener(`mousedown`, (evt) => {
@@ -112,7 +118,7 @@
       mainMapPin.style.left = `${mainMapPin.offsetLeft + shift.x}px`;
       mainMapPin.style.top = `${mainMapPin.offsetTop + shift.y}px`;
 
-      window.pin.controlsMainMapPinCoords();
+      controlsMainMapPinCoords();
       window.form.completeAddressInput();
     };
 
@@ -144,9 +150,8 @@
   window.pin = {
     getMainMapPinCoords,
     controlsMainMapPinCoords,
-    renderOfferPin,
-    renderOfferPins,
     deleteOfferPins,
+    updateOfferPins
   };
 
 })();
