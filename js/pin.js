@@ -20,6 +20,12 @@
     .content
     .querySelector(`button`);
 
+  const mainMapPinDefaultPos = `left: 570px; top: 375px;`;
+
+  const mainMapPinReset = () => {
+    mainMapPin.style = mainMapPinDefaultPos;
+  };
+
   const getMainMapPinCoords = () => {
     const x = Math.round(parseInt(mainMapPin.style.left, 10) + MAIN_MAP_PIN_WIDTH / 2);
     const y = window.form.isPageActivated
@@ -148,6 +154,7 @@
   });
 
   window.pin = {
+    mainMapPinReset,
     getMainMapPinCoords,
     controlsMainMapPinCoords,
     deleteOfferPins,
