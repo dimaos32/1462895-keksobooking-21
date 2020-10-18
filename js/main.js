@@ -1,5 +1,7 @@
 'use strict';
 
+let offersWithId = [];
+
 const map = document.querySelector(`.map`);
 const offersZone = map.querySelector(`.map__pins`);
 

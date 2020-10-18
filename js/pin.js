@@ -71,9 +71,11 @@
   const renderOfferPins = (data) => {
     const fragment = document.createDocumentFragment();
 
-    data.forEach((pin) => {
-      fragment.append(window.pin.renderOfferPin(pin));
-    });
+    data = window.util.getRandomArrayElements(data, data.length);
+
+    for (let i = 0; i < data.length && i < 5; i++) {
+      fragment.append(window.pin.renderOfferPin(data[i]));
+    }
 
     offersZone.append(fragment);
   };
