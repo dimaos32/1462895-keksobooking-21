@@ -14,7 +14,7 @@
     bungalow: `Бунгало`,
   };
 
-  let offersWithId;
+  let offersWithId = [];
 
   const getRandomIntNumber = (min = 0, max = 100) => {
     return min + Math.floor(Math.random() * (max - min + 1));
