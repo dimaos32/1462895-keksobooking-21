@@ -2,10 +2,11 @@
 
 const map = document.querySelector(`.map`);
 const offersZone = map.querySelector(`.map__pins`);
+const filterForm = document.querySelector(`.map__filters`);
 
 const onLoadSuccess = (data) => {
   window.util.offersWithId = window.util.addId(data);
-  window.pin.renderOfferPins(window.util.offersWithId);
+  window.pin.updateOfferPins(window.util.offersWithId);
 };
 
 const onLoadError = (message) => {
@@ -27,6 +28,8 @@ const deactivatePage = () => {
   window.form.disableForm();
   window.pin.deleteOfferPins();
   map.classList.add(`map--faded`);
+  filterForm.reset();
+  window.pin.mainMapPinReset();
 };
 
 deactivatePage();

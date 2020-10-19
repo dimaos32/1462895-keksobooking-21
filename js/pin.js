@@ -20,6 +20,12 @@
     .content
     .querySelector(`button`);
 
+  const mainMapPinDefaultPos = `left: 570px; top: 375px;`;
+
+  const mainMapPinReset = () => {
+    mainMapPin.style = mainMapPinDefaultPos;
+  };
+
   const getMainMapPinCoords = () => {
     const x = Math.round(parseInt(mainMapPin.style.left, 10) + MAIN_MAP_PIN_WIDTH / 2);
     const y = window.form.isPageActivated
@@ -71,9 +77,11 @@
   const renderOfferPins = (data) => {
     const fragment = document.createDocumentFragment();
 
-    data.forEach((pin) => {
-      fragment.append(window.pin.renderOfferPin(pin));
-    });
+    data = window.util.getRandomArrayElements(data, data.length);
+
+    for (let i = 0; i < data.length && i < 5; i++) {
+      fragment.append(renderOfferPin(data[i]));
+    }
 
     offersZone.append(fragment);
   };
@@ -86,6 +94,12 @@
         pin.remove();
       }
     });
+  };
+
+  const updateOfferPins = (data) => {
+    deleteOfferPins();
+    window.card.closePopup();
+    renderOfferPins(data);
   };
 
   mainMapPin.addEventListener(`mousedown`, (evt) => {
@@ -110,7 +124,7 @@
       mainMapPin.style.left = `${mainMapPin.offsetLeft + shift.x}px`;
       mainMapPin.style.top = `${mainMapPin.offsetTop + shift.y}px`;
 
-      window.pin.controlsMainMapPinCoords();
+      controlsMainMapPinCoords();
       window.form.completeAddressInput();
     };
 
@@ -140,11 +154,11 @@
   });
 
   window.pin = {
+    mainMapPinReset,
     getMainMapPinCoords,
     controlsMainMapPinCoords,
-    renderOfferPin,
-    renderOfferPins,
     deleteOfferPins,
+    updateOfferPins
   };
 
 })();

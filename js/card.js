@@ -159,6 +159,7 @@
 
   window.card = {
     renderOfferCard,
+    closePopup,
     openOffer,
   };
 
