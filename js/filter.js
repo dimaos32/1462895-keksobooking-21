@@ -29,6 +29,7 @@
   // const isWasher = filterForm.querySelector(`#filter-washer`);
   // const isElevator = filterForm.querySelector(`#filter-elevator`);
   // const isConditioner = filterForm.querySelector(`#filter-conditioner`);
+  const housingFeatures = document.querySelectorAll(`.map__checkbox`);
 
   const checkHousingType = (item) => {
     if (housingType.value !== FILTER_ALL) {
@@ -65,6 +66,16 @@
     return true;
   };
 
+  const checkHousingFeatures = (item) => {
+    for (const feature of housingFeatures) {
+      if (feature.checked && !item.offer.features.includes(feature.value)) {
+        return false;
+      }
+    }
+
+    return true;
+  };
+
   const filterOffers = (data) => {
 
     let filteredOffers = [];
@@ -74,7 +85,8 @@
       if (checkHousingType(data[i]) &&
         checkHousingPrice(data[i]) &&
         checkHousingRooms(data[i]) &&
-        checkHousingGuests(data[i])) {
+        checkHousingGuests(data[i]) &&
+        checkHousingFeatures(data[i])) {
         filteredOffers.push(data[i]);
       }
     }
