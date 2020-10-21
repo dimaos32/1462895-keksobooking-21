@@ -7,8 +7,8 @@
   const filterForm = document.querySelector(`.map__filters`);
 
   const onLoadSuccess = (data) => {
-    window.util.offersWithId = window.util.addId(data);
-    window.pin.updateOfferPins(window.util.offersWithId);
+    window.card.offersWithId = window.util.addId(data);
+    window.pin.updateOfferPins(window.card.offersWithId);
   };
 
   const onLoadError = (message) => {

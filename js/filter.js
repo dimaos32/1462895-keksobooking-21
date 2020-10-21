@@ -29,7 +29,7 @@
   const isConditioner = filterForm.querySelector(`#filter-conditioner`);
 
   const onFilterFormChange = () => {
-    let filteredOffers = window.util.offersWithId;
+    let filteredOffers = window.card.offersWithId;
 
     if (housingType.value !== FILTER_ALL) {
       filteredOffers = filteredOffers.filter((item) => {
