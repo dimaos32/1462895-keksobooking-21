@@ -21,69 +21,77 @@
   const housingPrice = filterForm.querySelector(`#housing-price`);
   const housingRooms = filterForm.querySelector(`#housing-rooms`);
   const housingGuests = filterForm.querySelector(`#housing-guests`);
-  const isWifi = filterForm.querySelector(`#filter-wifi`);
-  const isDishwasher = filterForm.querySelector(`#filter-dishwasher`);
-  const isParking = filterForm.querySelector(`#filter-parking`);
-  const isWasher = filterForm.querySelector(`#filter-washer`);
-  const isElevator = filterForm.querySelector(`#filter-elevator`);
-  const isConditioner = filterForm.querySelector(`#filter-conditioner`);
+  // const isWifi = filterForm.querySelector(`#filter-wifi`);
+  // const isDishwasher = filterForm.querySelector(`#filter-dishwasher`);
+  // const isParking = filterForm.querySelector(`#filter-parking`);
+  // const isWasher = filterForm.querySelector(`#filter-washer`);
+  // const isElevator = filterForm.querySelector(`#filter-elevator`);
+  // const isConditioner = filterForm.querySelector(`#filter-conditioner`);
 
-  const onFilterFormChange = () => {
-    let filteredOffers = window.card.offersWithId;
-
+  const checkHousingType = (item) => {
     if (housingType.value !== FILTER_ALL) {
-      filteredOffers = filteredOffers.filter((item) => {
-        return item.offer.type === housingType.value;
-      });
+      return item.offer.type === housingType.value;
     }
+    return true;
+  };
 
+  const checkHousingPrice = (item) => {
     switch (housingPrice.value) {
       case FILTER_PRICE.options.middle:
-        filteredOffers = filteredOffers.filter((item) => {
-          return item.offer.price >= FILTER_PRICE.borders.middleBottom &&
-            item.offer.price <= FILTER_PRICE.borders.middleTop;
-        });
-        break;
+        return item.offer.price >= FILTER_PRICE.borders.middleBottom &&
+          item.offer.price <= FILTER_PRICE.borders.middleTop;
       case FILTER_PRICE.options.low:
-        filteredOffers = filteredOffers.filter((item) => {
-          return item.offer.price < FILTER_PRICE.borders.middleBottom;
-        });
-        break;
+        return item.offer.price < FILTER_PRICE.borders.middleBottom;
       case FILTER_PRICE.options.high:
-        filteredOffers = filteredOffers.filter((item) => {
-          return item.offer.price > FILTER_PRICE.borders.middleTop;
-        });
-        break;
+        return item.offer.price > FILTER_PRICE.borders.middleTop;
+      default:
+        return housingPrice.value === FILTER_ALL;
     }
+  };
 
-    if (housingGuests.value !== FILTER_ALL) {
-      filteredOffers = filteredOffers.filter((item) => {
-        return item.offer.guests === +housingGuests.value;
-      });
-    }
-
+  const checkHousingRooms = (item) => {
     if (housingRooms.value !== FILTER_ALL) {
-      filteredOffers = filteredOffers.filter((item) => {
-        return item.offer.rooms === +housingRooms.value;
-      });
+      return item.offer.rooms === +housingRooms.value;
+    }
+    return true;
+  };
+
+  const checkHousingGuests = (item) => {
+    if (housingGuests.value !== FILTER_ALL) {
+      return item.offer.guests === +housingGuests.value;
+    }
+    return true;
+  };
+
+  const onFilterFormChange = () => {
+    let filteredOffers = [];
+
+    for (let i = 0; i < window.card.offersWithId.length &&
+      filteredOffers.length < window.pin.PINS_QUANTITY; i++) {
+      if (checkHousingType(window.card.offersWithId[i]) &&
+        checkHousingPrice(window.card.offersWithId[i]) &&
+        checkHousingRooms(window.card.offersWithId[i]) &&
+        checkHousingGuests(window.card.offersWithId[i])) {
+        filteredOffers.push(window.card.offersWithId[i]);
+      }
     }
 
-    const isFeatures = [
-      {flag: isWifi.checked, description: `wifi`},
-      {flag: isDishwasher.checked, description: `dishwasher`},
-      {flag: isParking.checked, description: `parking`},
-      {flag: isWasher.checked, description: `washer`},
-      {flag: isElevator.checked, description: `elevator`},
-      {flag: isConditioner.checked, description: `conditioner`},
-    ];
+    // const isFeatures = [
+    //   {flag: isWifi.checked, description: `wifi`},
+    //   {flag: isDishwasher.checked, description: `dishwasher`},
+    //   {flag: isParking.checked, description: `parking`},
+    //   {flag: isWasher.checked, description: `washer`},
+    //   {flag: isElevator.checked, description: `elevator`},
+    //   {flag: isConditioner.checked, description: `conditioner`},
+    // ];
 
-    isFeatures.forEach((feature) => {
-      if (feature.flag) {
-        filteredOffers = filteredOffers.filter((item) => {
-          return item.offer.features.includes(feature.description);
-        });
-      }
-    });
+    // isFeatures.forEach((feature) => {
+    //   if (feature.flag) {
+    //     filteredOffers = filteredOffers.filter((item) => {
+    //       return item.offer.features.includes(feature.description);
+    //     });
+    //   }
+    // });
 
     window.pin.updateOfferPins(filteredOffers);
   };

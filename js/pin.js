@@ -14,6 +14,8 @@
   const LOCATION_Y_MIN = 130;
   const LOCATION_Y_MAX = 630;
 
+  const PINS_QUANTITY = 5;
+
   const offersZone = document.querySelector(`.map__pins`);
   const mainMapPin = offersZone.querySelector(`.map__pin--main`);
   const pinTemplate = document.querySelector(`#pin`)
@@ -77,9 +79,7 @@
   const renderOfferPins = (data) => {
     const fragment = document.createDocumentFragment();
 
-    data = window.util.getRandomArrayElements(data, data.length);
-
-    for (let i = 0; i < data.length && i < 5; i++) {
+    for (let i = 0; i < data.length && i < PINS_QUANTITY; i++) {
       fragment.append(renderOfferPin(data[i]));
     }
 
@@ -154,6 +154,7 @@
   });
 
   window.pin = {
+    PINS_QUANTITY,
     mainMapPinReset,
     getMainMapPinCoords,
     controlsMainMapPinCoords,
