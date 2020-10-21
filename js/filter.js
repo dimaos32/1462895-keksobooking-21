@@ -2,6 +2,8 @@
 
 (() => {
 
+  const DEBOUNCE_INTERVAL = 500;
+
   const PINS_QUANTITY = 5;
 
   const FILTER_ALL = `any`;
@@ -23,12 +25,6 @@
   const housingPrice = filterForm.querySelector(`#housing-price`);
   const housingRooms = filterForm.querySelector(`#housing-rooms`);
   const housingGuests = filterForm.querySelector(`#housing-guests`);
-  // const isWifi = filterForm.querySelector(`#filter-wifi`);
-  // const isDishwasher = filterForm.querySelector(`#filter-dishwasher`);
-  // const isParking = filterForm.querySelector(`#filter-parking`);
-  // const isWasher = filterForm.querySelector(`#filter-washer`);
-  // const isElevator = filterForm.querySelector(`#filter-elevator`);
-  // const isConditioner = filterForm.querySelector(`#filter-conditioner`);
   const housingFeatures = document.querySelectorAll(`.map__checkbox`);
 
   const checkHousingType = (item) => {
@@ -91,23 +87,6 @@
       }
     }
 
-    // const isFeatures = [
-    //   {flag: isWifi.checked, description: `wifi`},
-    //   {flag: isDishwasher.checked, description: `dishwasher`},
-    //   {flag: isParking.checked, description: `parking`},
-    //   {flag: isWasher.checked, description: `washer`},
-    //   {flag: isElevator.checked, description: `elevator`},
-    //   {flag: isConditioner.checked, description: `conditioner`},
-    // ];
-
-    // isFeatures.forEach((feature) => {
-    //   if (feature.flag) {
-    //     filteredOffers = filteredOffers.filter((item) => {
-    //       return item.offer.features.includes(feature.description);
-    //     });
-    //   }
-    // });
-
     return filteredOffers;
   };
 
@@ -116,7 +95,7 @@
     window.pin.updateOfferPins(filterOffers(window.card.offersWithId));
   };
 
-  filterForm.addEventListener(`change`, onFilterFormChange);
+  filterForm.addEventListener(`change`, window.util.debounce(onFilterFormChange, DEBOUNCE_INTERVAL));
 
   window.filter = {
     filterOffers,

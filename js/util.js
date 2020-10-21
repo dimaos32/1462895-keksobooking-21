@@ -59,12 +59,28 @@
     return dataWithId;
   };
 
+  const debounce = (cb, interval) => {
+    let lastTimeout = null;
+
+    return function (...args) {
+
+      if (lastTimeout) {
+        window.clearTimeout(lastTimeout);
+      }
+
+      lastTimeout = window.setTimeout(() => {
+        cb.apply(null, [...args]);
+      }, interval);
+    };
+  };
+
   window.util = {
     getRandomIntNumber,
     getRandomArrayElements,
     getQEndings,
     getHousingType,
     addId,
+    debounce,
   };
 
 })();
