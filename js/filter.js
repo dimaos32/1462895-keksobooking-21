@@ -2,6 +2,8 @@
 
 (() => {
 
+  const PINS_QUANTITY = 5;
+
   const FILTER_ALL = `any`;
 
   const FILTER_PRICE = {
@@ -63,16 +65,17 @@
     return true;
   };
 
-  const onFilterFormChange = () => {
+  const filterOffers = (data) => {
+
     let filteredOffers = [];
 
-    for (let i = 0; i < window.card.offersWithId.length &&
-      filteredOffers.length < window.pin.PINS_QUANTITY; i++) {
-      if (checkHousingType(window.card.offersWithId[i]) &&
-        checkHousingPrice(window.card.offersWithId[i]) &&
-        checkHousingRooms(window.card.offersWithId[i]) &&
-        checkHousingGuests(window.card.offersWithId[i])) {
-        filteredOffers.push(window.card.offersWithId[i]);
+    for (let i = 0; i < data.length &&
+      filteredOffers.length < PINS_QUANTITY; i++) {
+      if (checkHousingType(data[i]) &&
+        checkHousingPrice(data[i]) &&
+        checkHousingRooms(data[i]) &&
+        checkHousingGuests(data[i])) {
+        filteredOffers.push(data[i]);
       }
     }
 
@@ -93,9 +96,18 @@
     //   }
     // });
 
-    window.pin.updateOfferPins(filteredOffers);
+    return filteredOffers;
+  };
+
+  const onFilterFormChange = () => {
+
+    window.pin.updateOfferPins(filterOffers(window.card.offersWithId));
   };
 
   filterForm.addEventListener(`change`, onFilterFormChange);
+
+  window.filter = {
+    filterOffers,
+  };
 
 })();

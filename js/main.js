@@ -8,7 +8,7 @@
 
   const onLoadSuccess = (data) => {
     window.card.offersWithId = window.util.addId(data);
-    window.pin.updateOfferPins(window.card.offersWithId);
+    window.pin.updateOfferPins(window.filter.filterOffers(window.card.offersWithId));
   };
 
   const onLoadError = (message) => {
