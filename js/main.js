@@ -1,50 +1,54 @@
 'use strict';
 
-const map = document.querySelector(`.map`);
-const offersZone = map.querySelector(`.map__pins`);
-const filterForm = document.querySelector(`.map__filters`);
+(() => {
 
-const onLoadSuccess = (data) => {
-  window.util.offersWithId = window.util.addId(data);
-  window.pin.updateOfferPins(window.util.offersWithId);
-};
+  const map = document.querySelector(`.map`);
+  const offersZone = map.querySelector(`.map__pins`);
+  const filterForm = document.querySelector(`.map__filters`);
 
-const onLoadError = (message) => {
-  const node = document.createElement(`div`);
+  const onLoadSuccess = (data) => {
+    window.util.offersWithId = window.util.addId(data);
+    window.pin.updateOfferPins(window.util.offersWithId);
+  };
 
-  node.classList.add(`on-error-message`);
+  const onLoadError = (message) => {
+    const node = document.createElement(`div`);
 
-  node.textContent = message;
-  document.body.insertAdjacentElement(`afterbegin`, node);
-};
+    node.classList.add(`on-error-message`);
 
-const activatePage = () => {
-  window.form.enableForm();
-  map.classList.remove(`map--faded`);
-  window.backend.load(onLoadSuccess, onLoadError);
-};
+    node.textContent = message;
+    document.body.insertAdjacentElement(`afterbegin`, node);
+  };
 
-const deactivatePage = () => {
-  window.form.disableForm();
-  window.pin.deleteOfferPins();
-  map.classList.add(`map--faded`);
-  filterForm.reset();
-  window.pin.mainMapPinReset();
-};
+  const activatePage = () => {
+    window.form.enableForm();
+    map.classList.remove(`map--faded`);
+    window.backend.load(onLoadSuccess, onLoadError);
+  };
 
-deactivatePage();
+  const deactivatePage = () => {
+    window.form.disableForm();
+    window.pin.deleteOfferPins();
+    map.classList.add(`map--faded`);
+    filterForm.reset();
+    window.pin.mainMapPinReset();
+  };
 
-offersZone.addEventListener(`click`, (evt) => {
-  window.card.openOffer(evt);
-});
+  deactivatePage();
 
-offersZone.addEventListener(`keydown`, (evt) => {
-  if (evt.key === `Enter`) {
+  offersZone.addEventListener(`click`, (evt) => {
     window.card.openOffer(evt);
-  }
-});
+  });
 
-window.main = {
-  activatePage,
-  deactivatePage,
-};
+  offersZone.addEventListener(`keydown`, (evt) => {
+    if (evt.key === `Enter`) {
+      window.card.openOffer(evt);
+    }
+  });
+
+  window.main = {
+    activatePage,
+    deactivatePage,
+  };
+
+})();

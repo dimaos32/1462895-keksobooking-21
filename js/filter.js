@@ -2,6 +2,20 @@
 
 (() => {
 
+  const FILTER_ALL = `any`;
+
+  const FILTER_PRICE = {
+    options: {
+      low: `low`,
+      middle: `middle`,
+      high: `high`,
+    },
+    borders: {
+      middleBottom: 10000,
+      middleTop: 50000,
+    }
+  };
+
   const filterForm = document.querySelector(`.map__filters`);
   const housingType = filterForm.querySelector(`#housing-type`);
   const housingPrice = filterForm.querySelector(`#housing-price`);
@@ -17,37 +31,38 @@
   const onFilterFormChange = () => {
     let filteredOffers = window.util.offersWithId;
 
-    if (housingType.value !== `any`) {
+    if (housingType.value !== FILTER_ALL) {
       filteredOffers = filteredOffers.filter((item) => {
         return item.offer.type === housingType.value;
       });
     }
 
     switch (housingPrice.value) {
-      case `middle`:
+      case FILTER_PRICE.options.middle:
         filteredOffers = filteredOffers.filter((item) => {
-          return item.offer.price >= 10000 && item.offer.price <= 50000;
+          return item.offer.price >= FILTER_PRICE.borders.middleBottom &&
+            item.offer.price <= FILTER_PRICE.borders.middleTop;
         });
         break;
-      case `low`:
+      case FILTER_PRICE.options.low:
         filteredOffers = filteredOffers.filter((item) => {
-          return item.offer.price < 10000;
+          return item.offer.price < FILTER_PRICE.borders.middleBottom;
         });
         break;
-      case `high`:
+      case FILTER_PRICE.options.high:
         filteredOffers = filteredOffers.filter((item) => {
-          return item.offer.price > 50000;
+          return item.offer.price > FILTER_PRICE.borders.middleTop;
         });
         break;
     }
 
-    if (housingGuests.value !== `any`) {
+    if (housingGuests.value !== FILTER_ALL) {
       filteredOffers = filteredOffers.filter((item) => {
         return item.offer.guests === +housingGuests.value;
       });
     }
 
-    if (housingRooms.value !== `any`) {
+    if (housingRooms.value !== FILTER_ALL) {
       filteredOffers = filteredOffers.filter((item) => {
         return item.offer.rooms === +housingRooms.value;
       });
@@ -71,10 +86,6 @@
     });
 
     window.pin.updateOfferPins(filteredOffers);
-  };
-
-  window.data = {
-    onFilterFormChange,
   };
 
   filterForm.addEventListener(`change`, onFilterFormChange);
