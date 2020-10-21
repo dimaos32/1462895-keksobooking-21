@@ -10,6 +10,8 @@
   let openedCard;
   let popupClose;
 
+  let offersWithId = [];
+
   const addOfferFeatures = (item, features) => {
     item.innerHTML = ``;
 
@@ -101,7 +103,7 @@
   };
 
   const openPopup = (id) => {
-    const card = window.util.offersWithId.find((item) => item.id === id);
+    const card = window.card.offersWithId.find((item) => item.id === id);
 
     openedCard = renderOfferCard(card);
     map.append(openedCard);
@@ -158,6 +160,7 @@
   };
 
   window.card = {
+    offersWithId,
     renderOfferCard,
     closePopup,
     openOffer,

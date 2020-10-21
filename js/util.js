@@ -14,8 +14,6 @@
     bungalow: `Бунгало`,
   };
 
-  let offersWithId = [];
-
   const getRandomIntNumber = (min = 0, max = 100) => {
     return min + Math.floor(Math.random() * (max - min + 1));
   };
@@ -61,13 +59,28 @@
     return dataWithId;
   };
 
+  const debounce = (cb, interval) => {
+    let lastTimeout = null;
+
+    return function (...args) {
+
+      if (lastTimeout) {
+        window.clearTimeout(lastTimeout);
+      }
+
+      lastTimeout = window.setTimeout(() => {
+        cb.apply(null, [...args]);
+      }, interval);
+    };
+  };
+
   window.util = {
-    offersWithId,
     getRandomIntNumber,
     getRandomArrayElements,
     getQEndings,
     getHousingType,
     addId,
+    debounce,
   };
 
 })();

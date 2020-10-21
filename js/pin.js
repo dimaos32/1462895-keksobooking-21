@@ -77,9 +77,7 @@
   const renderOfferPins = (data) => {
     const fragment = document.createDocumentFragment();
 
-    data = window.util.getRandomArrayElements(data, data.length);
-
-    for (let i = 0; i < data.length && i < 5; i++) {
+    for (let i = 0; i < data.length; i++) {
       fragment.append(renderOfferPin(data[i]));
     }
 
