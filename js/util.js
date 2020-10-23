@@ -52,10 +52,11 @@
   };
 
   const addId = (array) => {
-    const dataWithId = array.slice();
 
-    dataWithId.forEach((item, i) => {
-      item.id = `${i}`;
+    const dataWithId = array.map((item, i) => {
+      const copyItem = Object.assign({}, item);
+      copyItem.id = `${i}`;
+      return copyItem;
     });
 
     return dataWithId;
@@ -71,7 +72,7 @@
       }
 
       lastTimeout = window.setTimeout(() => {
-        cb.apply(null, [...args]);
+        cb(...args);
       }, interval);
     };
   };
