@@ -10,8 +10,6 @@
   let openedCard;
   let popupClose;
 
-  let offersWithId = [];
-
   const addOfferFeatures = (item, features) => {
     item.innerHTML = ``;
 
@@ -160,7 +158,6 @@
   };
 
   window.card = {
-    offersWithId,
     renderOfferCard,
     closePopup,
     openOffer,

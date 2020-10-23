@@ -18,12 +18,13 @@
   const housingPrice = filterForm.querySelector(`#housing-price`);
   const housingRooms = filterForm.querySelector(`#housing-rooms`);
   const housingGuests = filterForm.querySelector(`#housing-guests`);
-  const housingFeatures = document.querySelectorAll(`.map__checkbox`);
+  const housingFeatures = filterForm.querySelectorAll(`.map__checkbox`);
 
   const checkHousingType = (item) => {
     if (housingType.value !== FILTER_ALL) {
       return item.offer.type === housingType.value;
     }
+
     return true;
   };
 
@@ -45,6 +46,7 @@
     if (housingRooms.value !== FILTER_ALL) {
       return item.offer.rooms === +housingRooms.value;
     }
+
     return true;
   };
 
@@ -52,6 +54,7 @@
     if (housingGuests.value !== FILTER_ALL) {
       return item.offer.guests === +housingGuests.value;
     }
+
     return true;
   };
 
@@ -66,8 +69,7 @@
   };
 
   const filterOffers = (data) => {
-
-    let filteredOffers = [];
+    const filteredOffers = [];
 
     for (let i = 0; i < data.length &&
       filteredOffers.length < PINS_QUANTITY; i++) {
@@ -84,7 +86,6 @@
   };
 
   const onFilterFormChange = () => {
-
     window.pin.updateOfferPins(filterOffers(window.card.offersWithId));
   };
 
