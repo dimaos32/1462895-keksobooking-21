@@ -2,6 +2,8 @@
 
 (() => {
 
+  const DEBOUNCE_INTERVAL = 500;
+
   const qEndingsMap = {
     room: [`комната`, `комнаты`, `комнат`],
     guest: [`гостя`, `гостей`, `гостей`],
@@ -59,7 +61,7 @@
     return dataWithId;
   };
 
-  const debounce = (cb, interval) => {
+  const debounce = (cb, interval = DEBOUNCE_INTERVAL) => {
     let lastTimeout = null;
 
     return function (...args) {
