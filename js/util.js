@@ -2,6 +2,8 @@
 
 (() => {
 
+  const DEBOUNCE_INTERVAL = 500;
+
   const qEndingsMap = {
     room: [`комната`, `комнаты`, `комнат`],
     guest: [`гостя`, `гостей`, `гостей`],
@@ -50,16 +52,17 @@
   };
 
   const addId = (array) => {
-    const dataWithId = array.slice();
 
-    dataWithId.forEach((item, i) => {
-      item.id = `${i}`;
+    const dataWithId = array.map((item, i) => {
+      const copyItem = Object.assign({}, item);
+      copyItem.id = `${i}`;
+      return copyItem;
     });
 
     return dataWithId;
   };
 
-  const debounce = (cb, interval) => {
+  const debounce = (cb, interval = DEBOUNCE_INTERVAL) => {
     let lastTimeout = null;
 
     return function (...args) {
@@ -69,7 +72,7 @@
       }
 
       lastTimeout = window.setTimeout(() => {
-        cb.apply(null, [...args]);
+        cb(...args);
       }, interval);
     };
   };
