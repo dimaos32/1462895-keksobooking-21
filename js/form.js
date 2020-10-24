@@ -7,6 +7,8 @@
 
   const MAX_PRICE = 1000000;
 
+  const FILE_TYPES = [`gif`, `jpg`, `jpeg`, `png`];
+
   const minPricesMap = {
     palace: 10000,
     flat: 1000,
@@ -26,6 +28,8 @@
 
   const adForm = document.querySelector(`.ad-form`);
   const adFormReset = document.querySelector(`.ad-form__reset`);
+  const adFormAvatarInput = adForm.querySelector(`.ad-form-header__input`);
+  const adFormAvatarPreview = adForm.querySelector(`.ad-form-header__preview img`);
   const adFormTitle = adForm.querySelector(`#title`);
   const adFormAddress = adForm.querySelector(`#address`);
   const adFormPrice = adForm.querySelector(`#price`);
@@ -35,6 +39,8 @@
   const adFormTimeout = adForm.querySelector(`#timeout`);
   const adFormRoomNumber = adForm.querySelector(`#room_number`);
   const adFormCapacity = adForm.querySelector(`#capacity`);
+  const adFormPhotoInput = adForm.querySelector(`#images`);
+  const adFormPhoto = adForm.querySelector(`.ad-form__photo`);
 
   let isPageActivated = false;
 
@@ -50,6 +56,49 @@
     const coords = window.pin.getMainMapPinCoords();
 
     adFormAddress.value = `${coords.x}, ${coords.y}`;
+  };
+
+  const onAvatarLoad = (evt) => {
+    const file = evt.target.files[0];
+
+    const isPicture = FILE_TYPES.some((ending) => {
+      return file.name.toLowerCase().endsWith(ending);
+    });
+
+    if (isPicture) {
+      const reader = new FileReader();
+      reader.addEventListener(`load`, () => {
+        adFormAvatarPreview.src = reader.result;
+      });
+
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const onPhotoLoad = (evt) => {
+    const file = evt.target.files[0];
+
+    const isPicture = FILE_TYPES.some((ending) => {
+      return file.name.toLowerCase().endsWith(ending);
+    });
+
+    if (isPicture) {
+      const reader = new FileReader();
+
+      reader.addEventListener(`load`, () => {
+        const photoPreview = document.createElement(`img`);
+
+        adFormPhoto.innerHTML = ``;
+        adFormPhoto.style.display = `flex`;
+        photoPreview.src = reader.result;
+        photoPreview.style.maxWidth = `70px`;
+        photoPreview.style.maxHeight = `70px`;
+        photoPreview.style.margin = `auto`;
+        adFormPhoto.append(photoPreview);
+      });
+
+      reader.readAsDataURL(file);
+    }
   };
 
   const changeCapacityOptions = () => {
@@ -132,6 +181,8 @@
     document.addEventListener(`keydown`, onEscPress);
   };
 
+  adFormAvatarInput.addEventListener(`change`, onAvatarLoad);
+
   adFormTitle.addEventListener(`input`, () => {
     const valueLength = adFormTitle.value.length;
 
@@ -173,6 +224,8 @@
   adFormRoomNumber.addEventListener(`change`, () => {
     changeCapacityOptions();
   });
+
+  adFormPhotoInput.addEventListener(`change`, onPhotoLoad);
 
   adForm.addEventListener(`submit`, (evt) => {
     evt.preventDefault();
