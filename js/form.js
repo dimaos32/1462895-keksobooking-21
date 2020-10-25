@@ -63,6 +63,7 @@
 
     if (window.util.checkExtentionAccorddance(file, FILE_TYPES)) {
       const reader = new FileReader();
+
       reader.addEventListener(`load`, () => {
         adFormAvatarPreview.src = reader.result;
       });
