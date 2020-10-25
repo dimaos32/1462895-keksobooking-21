@@ -4,7 +4,7 @@
 
   const map = document.querySelector(`.map`);
   const offersZone = map.querySelector(`.map__pins`);
-  const filterForm = document.querySelector(`.map__filters`);
+  const mapFilters = document.querySelector(`.map__filters`);
 
   const onLoadSuccess = (data) => {
     window.card.offersWithId = window.util.addId(data);
@@ -30,8 +30,10 @@
     window.form.disableForm();
     window.pin.deleteOfferPins();
     map.classList.add(`map--faded`);
-    filterForm.reset();
+    mapFilters.reset();
+    window.card.closePopup();
     window.pin.mainMapPinReset();
+    window.form.completeAddressInput();
   };
 
   deactivatePage();

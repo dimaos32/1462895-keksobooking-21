@@ -9,6 +9,8 @@
 
   const FILE_TYPES = [`gif`, `jpg`, `jpeg`, `png`];
 
+  const DEFAULT_AVATAR_PIC = `img/muffin-grey.svg`;
+
   const minPricesMap = {
     palace: 10000,
     flat: 1000,
@@ -152,6 +154,8 @@
     successMessage.addEventListener(`click`, onClick);
     document.addEventListener(`keydown`, onEscPress);
 
+    adFormAvatarPreview.src = DEFAULT_AVATAR_PIC;
+    adFormPhoto.innerHTML = ``;
     adForm.reset();
     window.main.deactivatePage();
   };
