@@ -26,6 +26,7 @@
     100: `<option value="0" selected>не для гостей</option>`,
   };
 
+  const mapFilters = document.querySelector(`.map__filters`);
   const adForm = document.querySelector(`.ad-form`);
   const adFormReset = document.querySelector(`.ad-form__reset`);
   const adFormAvatarInput = adForm.querySelector(`.ad-form-header__input`);
@@ -46,9 +47,14 @@
 
   const toggleElementsState = (form, isOn) => {
     const fieldsets = form.querySelectorAll(`fieldset`);
+    const selects = form.querySelectorAll(`select`);
 
     fieldsets.forEach((fieldset) => {
       fieldset.disabled = !isOn;
+    });
+
+    selects.forEach((select) => {
+      select.disabled = !isOn;
     });
   };
 
@@ -105,6 +111,7 @@
     window.form.isPageActivated = true;
 
     toggleElementsState(adForm, true);
+    toggleElementsState(mapFilters, true);
     completeAddressInput();
 
     adForm.classList.remove(`ad-form--disabled`);
@@ -114,6 +121,7 @@
     window.form.isPageActivated = false;
 
     toggleElementsState(adForm, false);
+    toggleElementsState(mapFilters, false);
     completeAddressInput();
 
     adForm.classList.add(`ad-form--disabled`);
