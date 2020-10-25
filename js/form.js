@@ -240,9 +240,10 @@
 
   adFormReset.addEventListener(`click`, (evt) => {
     evt.preventDefault();
-    adForm.reset();
-    completeAddressInput();
-    syncPrice();
+    window.main.deactivatePage();
+    adFormAvatarPreview.src = DEFAULT_AVATAR_PIC;
+    adFormPhoto.innerHTML = ``;
+
   });
 
   window.form = {
