@@ -181,7 +181,9 @@
     document.addEventListener(`keydown`, onEscPress);
   };
 
-  adFormAvatarInput.addEventListener(`change`, onAvatarLoad);
+  adFormAvatarInput.addEventListener(`change`, (evt) => {
+    onAvatarLoad(evt);
+  });
 
   adFormTitle.addEventListener(`input`, () => {
     const valueLength = adFormTitle.value.length;
@@ -225,7 +227,9 @@
     changeCapacityOptions();
   });
 
-  adFormPhotoInput.addEventListener(`change`, onPhotoLoad);
+  adFormPhotoInput.addEventListener(`change`, (evt) => {
+    onPhotoLoad(evt);
+  });
 
   adForm.addEventListener(`submit`, (evt) => {
     evt.preventDefault();
