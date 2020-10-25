@@ -61,11 +61,7 @@
   const onAvatarLoad = (evt) => {
     const file = evt.target.files[0];
 
-    const isPicture = FILE_TYPES.some((ending) => {
-      return file.name.toLowerCase().endsWith(ending);
-    });
-
-    if (isPicture) {
+    if (window.util.checkExtentionAccorddance(file, FILE_TYPES)) {
       const reader = new FileReader();
       reader.addEventListener(`load`, () => {
         adFormAvatarPreview.src = reader.result;
@@ -78,11 +74,7 @@
   const onPhotoLoad = (evt) => {
     const file = evt.target.files[0];
 
-    const isPicture = FILE_TYPES.some((ending) => {
-      return file.name.toLowerCase().endsWith(ending);
-    });
-
-    if (isPicture) {
+    if (window.util.checkExtentionAccorddance(file, FILE_TYPES)) {
       const reader = new FileReader();
 
       reader.addEventListener(`load`, () => {

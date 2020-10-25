@@ -62,6 +62,12 @@
     return dataWithId;
   };
 
+  const checkExtentionAccorddance = (file, arr) => {
+    return arr.some((ending) => {
+      return file.name.toLowerCase().endsWith(ending);
+    });
+  };
+
   const debounce = (cb, interval = DEBOUNCE_INTERVAL) => {
     let lastTimeout = null;
 
@@ -83,6 +89,7 @@
     getQEndings,
     getHousingType,
     addId,
+    checkExtentionAccorddance,
     debounce,
   };
 
