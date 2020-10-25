@@ -89,11 +89,8 @@
         const photoPreview = document.createElement(`img`);
 
         adFormPhoto.innerHTML = ``;
-        adFormPhoto.style.display = `flex`;
         photoPreview.src = reader.result;
-        photoPreview.style.maxWidth = `70px`;
-        photoPreview.style.maxHeight = `70px`;
-        photoPreview.style.margin = `auto`;
+        photoPreview.classList.add(`ad-form__photo-preview`);
         adFormPhoto.append(photoPreview);
       });
 
