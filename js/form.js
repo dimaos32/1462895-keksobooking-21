@@ -9,6 +9,8 @@
 
   const FILE_TYPES = [`gif`, `jpg`, `jpeg`, `png`];
 
+  const DEFAULT_AVATAR_PIC = `img/muffin-grey.svg`;
+
   const minPricesMap = {
     palace: 10000,
     flat: 1000,
@@ -26,6 +28,7 @@
     100: `<option value="0" selected>не для гостей</option>`,
   };
 
+  const mapFilters = document.querySelector(`.map__filters`);
   const adForm = document.querySelector(`.ad-form`);
   const adFormReset = document.querySelector(`.ad-form__reset`);
   const adFormAvatarInput = adForm.querySelector(`.ad-form-header__input`);
@@ -46,9 +49,14 @@
 
   const toggleElementsState = (form, isOn) => {
     const fieldsets = form.querySelectorAll(`fieldset`);
+    const selects = form.querySelectorAll(`select`);
 
     fieldsets.forEach((fieldset) => {
       fieldset.disabled = !isOn;
+    });
+
+    selects.forEach((select) => {
+      select.disabled = !isOn;
     });
   };
 
@@ -61,12 +69,9 @@
   const onAvatarLoad = (evt) => {
     const file = evt.target.files[0];
 
-    const isPicture = FILE_TYPES.some((ending) => {
-      return file.name.toLowerCase().endsWith(ending);
-    });
-
-    if (isPicture) {
+    if (window.util.checkExtentionAccorddance(file, FILE_TYPES)) {
       const reader = new FileReader();
+
       reader.addEventListener(`load`, () => {
         adFormAvatarPreview.src = reader.result;
       });
@@ -78,22 +83,15 @@
   const onPhotoLoad = (evt) => {
     const file = evt.target.files[0];
 
-    const isPicture = FILE_TYPES.some((ending) => {
-      return file.name.toLowerCase().endsWith(ending);
-    });
-
-    if (isPicture) {
+    if (window.util.checkExtentionAccorddance(file, FILE_TYPES)) {
       const reader = new FileReader();
 
       reader.addEventListener(`load`, () => {
         const photoPreview = document.createElement(`img`);
 
         adFormPhoto.innerHTML = ``;
-        adFormPhoto.style.display = `flex`;
         photoPreview.src = reader.result;
-        photoPreview.style.maxWidth = `70px`;
-        photoPreview.style.maxHeight = `70px`;
-        photoPreview.style.margin = `auto`;
+        photoPreview.classList.add(`ad-form__photo-preview`);
         adFormPhoto.append(photoPreview);
       });
 
@@ -115,6 +113,7 @@
     window.form.isPageActivated = true;
 
     toggleElementsState(adForm, true);
+    toggleElementsState(mapFilters, true);
     completeAddressInput();
 
     adForm.classList.remove(`ad-form--disabled`);
@@ -124,6 +123,7 @@
     window.form.isPageActivated = false;
 
     toggleElementsState(adForm, false);
+    toggleElementsState(mapFilters, false);
     completeAddressInput();
 
     adForm.classList.add(`ad-form--disabled`);
@@ -154,6 +154,8 @@
     successMessage.addEventListener(`click`, onClick);
     document.addEventListener(`keydown`, onEscPress);
 
+    adFormAvatarPreview.src = DEFAULT_AVATAR_PIC;
+    adFormPhoto.innerHTML = ``;
     adForm.reset();
     window.main.deactivatePage();
   };
@@ -181,7 +183,9 @@
     document.addEventListener(`keydown`, onEscPress);
   };
 
-  adFormAvatarInput.addEventListener(`change`, onAvatarLoad);
+  adFormAvatarInput.addEventListener(`change`, (evt) => {
+    onAvatarLoad(evt);
+  });
 
   adFormTitle.addEventListener(`input`, () => {
     const valueLength = adFormTitle.value.length;
@@ -225,7 +229,9 @@
     changeCapacityOptions();
   });
 
-  adFormPhotoInput.addEventListener(`change`, onPhotoLoad);
+  adFormPhotoInput.addEventListener(`change`, (evt) => {
+    onPhotoLoad(evt);
+  });
 
   adForm.addEventListener(`submit`, (evt) => {
     evt.preventDefault();
@@ -234,9 +240,10 @@
 
   adFormReset.addEventListener(`click`, (evt) => {
     evt.preventDefault();
-    adForm.reset();
-    completeAddressInput();
-    syncPrice();
+    window.main.deactivatePage();
+    adFormAvatarPreview.src = DEFAULT_AVATAR_PIC;
+    adFormPhoto.innerHTML = ``;
+
   });
 
   window.form = {
