@@ -518,6 +518,10 @@ fieldset {
   background-color: #dadada;
 }
 
+.ad-form-header__preview img {
+  object-fit: cover;
+}
+
 .ad-form__field {
   display: -webkit-box;
   display: -ms-flexbox;

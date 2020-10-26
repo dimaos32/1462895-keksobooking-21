@@ -7,6 +7,7 @@
   const StatusCode = {
     OK: 200
   };
+
   const TIMEOUT = 10000;
 
   const makeRequest = (method, url, onSuccess, onError, data) => {
