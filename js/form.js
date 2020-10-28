@@ -142,7 +142,7 @@ const onSendSuccess = () => {
   };
 
   const onEscPress = (evt) => {
-    if (evt.key === `Escape`) {
+    if (evt.key === window.util.Key.ESCAPE) {
       successMessage.remove();
     }
   };
@@ -170,7 +170,7 @@ const onSendError = () => {
   };
 
   const onEscPress = (evt) => {
-    if (evt.key === `Escape`) {
+    if (evt.key === window.util.Key.ESCAPE) {
       errorMessage.remove();
     }
   };

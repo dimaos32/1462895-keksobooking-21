@@ -2,6 +2,11 @@
 
 const DEBOUNCE_INTERVAL = 500;
 
+const Key = {
+  ENTER: `Enter`,
+  ESCAPE: `Escape`,
+};
+
 const qEndingsMap = {
   room: [`комната`, `комнаты`, `комнат`],
   guest: [`гостя`, `гостей`, `гостей`],
@@ -77,6 +82,7 @@ const debounce = (cb, interval = DEBOUNCE_INTERVAL) => {
 };
 
 window.util = {
+  Key,
   getRandomIntNumber,
   getRandomArrayElements,
   getQEndings,

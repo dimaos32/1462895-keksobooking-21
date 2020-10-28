@@ -123,7 +123,7 @@ const onPopupClose = () => {
 };
 
 const onPopupEscPress = (evt) => {
-  if (evt.key === `Escape`) {
+  if (evt.key === window.util.Key.ESCAPE) {
     evt.preventDefault();
     map.querySelector(`.map__pin--active`).classList.remove(`map__pin--active`);
     closePopup();
@@ -131,7 +131,7 @@ const onPopupEscPress = (evt) => {
 };
 
 const onPopupEnterPress = (evt) => {
-  if (evt.key === `Enter`) {
+  if (evt.key === window.util.Key.ENTER) {
     evt.preventDefault();
     closePopup();
   }

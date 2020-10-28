@@ -144,7 +144,7 @@ mainMapPin.addEventListener(`mousedown`, (evt) => {
 });
 
 mainMapPin.addEventListener(`keydown`, (evt) => {
-  if (evt.key === `Enter` && !window.form.isPageActivated) {
+  if (evt.key === window.util.Key.ENTER && !window.form.isPageActivated) {
     window.main.activatePage();
   }
 });
