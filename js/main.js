@@ -43,7 +43,7 @@ offersZone.addEventListener(`click`, (evt) => {
 });
 
 offersZone.addEventListener(`keydown`, (evt) => {
-  if (evt.key === `Enter`) {
+  if (evt.key === window.util.Key.ENTER) {
     window.card.openOffer(evt);
   }
 });

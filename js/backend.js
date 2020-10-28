@@ -1,5 +1,7 @@
 'use strict';
 
+const MILISECONDS_IN_SECOND = 1000;
+
 const API_URL = `https://21.javascript.pages.academy/keksobooking`;
 
 const StatusCode = {
@@ -32,7 +34,7 @@ const makeRequest = (method, url, onSuccess, onError, data) => {
     onError(`Произошла ошибка соединения`);
   });
   xhr.addEventListener(`timeout`, function () {
-    onError(`Запрос не успел выполниться за ${xhr.timeout / 1000} с`);
+    onError(`Запрос не успел выполниться за ${xhr.timeout / MILISECONDS_IN_SECOND} с`);
   });
 };
 

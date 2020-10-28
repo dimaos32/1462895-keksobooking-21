@@ -2,6 +2,11 @@
 
 const DEBOUNCE_INTERVAL = 500;
 
+const Key = {
+  ENTER: `Enter`,
+  ESCAPE: `Escape`,
+};
+
 const qEndingsMap = {
   room: [`комната`, `комнаты`, `комнат`],
   guest: [`гостя`, `гостей`, `гостей`],
@@ -50,17 +55,12 @@ const getHousingType = (type) => {
 };
 
 const addId = (array) => {
-
-  const dataWithId = array.map((item, i) => {
-    const copyItem = Object.assign({}, item);
-    copyItem.id = `${i}`;
-    return copyItem;
+  return array.map((item, i) => {
+    return Object.assign({}, item, {id: `${i}`});
   });
-
-  return dataWithId;
 };
 
-const checkExtentionAccorddance = (file, arr) => {
+const checkExtensionAccordance = (file, arr) => {
   return arr.some((ending) => {
     return file.name.toLowerCase().endsWith(ending);
   });
@@ -82,11 +82,12 @@ const debounce = (cb, interval = DEBOUNCE_INTERVAL) => {
 };
 
 window.util = {
+  Key,
   getRandomIntNumber,
   getRandomArrayElements,
   getQEndings,
   getHousingType,
   addId,
-  checkExtentionAccorddance,
+  checkExtensionAccordance,
   debounce,
 };

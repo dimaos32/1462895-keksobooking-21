@@ -67,7 +67,7 @@ const completeAddressInput = () => {
 const onAvatarLoad = (evt) => {
   const file = evt.target.files[0];
 
-  if (window.util.checkExtentionAccorddance(file, FILE_TYPES)) {
+  if (window.util.checkExtensionAccordance(file, FILE_TYPES)) {
     const reader = new FileReader();
 
     reader.addEventListener(`load`, () => {
@@ -81,7 +81,7 @@ const onAvatarLoad = (evt) => {
 const onPhotoLoad = (evt) => {
   const file = evt.target.files[0];
 
-  if (window.util.checkExtentionAccorddance(file, FILE_TYPES)) {
+  if (window.util.checkExtensionAccordance(file, FILE_TYPES)) {
     const reader = new FileReader();
 
     reader.addEventListener(`load`, () => {
@@ -142,7 +142,7 @@ const onSendSuccess = () => {
   };
 
   const onEscPress = (evt) => {
-    if (evt.key === `Escape`) {
+    if (evt.key === window.util.Key.ESCAPE) {
       successMessage.remove();
     }
   };
@@ -170,7 +170,7 @@ const onSendError = () => {
   };
 
   const onEscPress = (evt) => {
-    if (evt.key === `Escape`) {
+    if (evt.key === window.util.Key.ESCAPE) {
       errorMessage.remove();
     }
   };

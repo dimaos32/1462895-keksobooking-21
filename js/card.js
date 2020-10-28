@@ -60,7 +60,7 @@ const renderOfferCard = (item) => {
   } = item;
 
   const offerPreset = cardTemplate.cloneNode(true);
-  const popupAvapar = offerPreset.querySelector(`.popup__avatar`);
+  const popupAvatar = offerPreset.querySelector(`.popup__avatar`);
   const popupTitle = offerPreset.querySelector(`.popup__title`);
   const popupAddress = offerPreset.querySelector(`.popup__text--address`);
   const popupPrice = offerPreset.querySelector(`.popup__text--price`);
@@ -75,7 +75,7 @@ const renderOfferCard = (item) => {
     offerPreset.dataset.id = id;
   }
 
-  popupAvapar.src = avatar ? avatar : popupAvapar.remove();
+  popupAvatar.src = avatar ? avatar : popupAvatar.remove();
   popupTitle.textContent = title;
   popupAddress.textContent = address;
   popupPrice.innerHTML = price ? `${price}&#x20bd;<span>/ночь</span>` : ``;
@@ -123,7 +123,7 @@ const onPopupClose = () => {
 };
 
 const onPopupEscPress = (evt) => {
-  if (evt.key === `Escape`) {
+  if (evt.key === window.util.Key.ESCAPE) {
     evt.preventDefault();
     map.querySelector(`.map__pin--active`).classList.remove(`map__pin--active`);
     closePopup();
@@ -131,7 +131,7 @@ const onPopupEscPress = (evt) => {
 };
 
 const onPopupEnterPress = (evt) => {
-  if (evt.key === `Enter`) {
+  if (evt.key === window.util.Key.ENTER) {
     evt.preventDefault();
     closePopup();
   }
