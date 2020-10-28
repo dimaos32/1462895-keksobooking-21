@@ -50,14 +50,9 @@ const getHousingType = (type) => {
 };
 
 const addId = (array) => {
-
-  const dataWithId = array.map((item, i) => {
-    const copyItem = Object.assign({}, item);
-    copyItem.id = `${i}`;
-    return copyItem;
+  return array.map((item, i) => {
+    return Object.assign({}, item, {id: `${i}`});
   });
-
-  return dataWithId;
 };
 
 const checkExtensionAccordance = (file, arr) => {
