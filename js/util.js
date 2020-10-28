@@ -60,7 +60,7 @@ const addId = (array) => {
   return dataWithId;
 };
 
-const checkExtentionAccorddance = (file, arr) => {
+const checkExtensionAccordance = (file, arr) => {
   return arr.some((ending) => {
     return file.name.toLowerCase().endsWith(ending);
   });
@@ -87,6 +87,6 @@ window.util = {
   getQEndings,
   getHousingType,
   addId,
-  checkExtentionAccorddance,
+  checkExtensionAccordance,
   debounce,
 };
